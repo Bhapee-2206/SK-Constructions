@@ -1,0 +1,4493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SK Construction - Stock Management System</title>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  
+  <style>
+    /* ==========================================
+       1. CORE DESIGN SYSTEM & THEME
+       ========================================== */
+    :root {
+      /* Palette */
+      --primary-color: #1E3A8A;
+      --secondary-color: #2563EB;
+      --success-color: #22C55E;
+      --warning-color: #F59E0B;
+      --danger-color: #EF4444;
+      --bg-color: #F8FAFC;
+      --card-bg: #FFFFFF;
+      --border-color: #E2E8F0;
+      
+      /* Typography */
+      --text-main: #1E293B;
+      --text-muted: #64748B;
+      --text-light: #94A3B8;
+      
+      /* Sidebar specific */
+      --sidebar-bg: #0F172A;
+      --sidebar-text: #94A3B8;
+      --sidebar-text-active: #F8FAFC;
+      --sidebar-active: #1E293B;
+      --sidebar-hover: #1E293B;
+      
+      /* Layout & Shadows */
+      --shadow-sm: 0 1px 3px rgba(0,0,0,0.05), 0 1px 2px rgba(0,0,0,0.02);
+      --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -1px rgba(0,0,0,0.03);
+      --shadow-lg: 0 10px 15px -3px rgba(15,23,42,0.05), 0 4px 6px -2px rgba(15,23,42,0.02);
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 16px;
+      
+      --transition-fast: 0.2s ease;
+      --transition-normal: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      overflow-x: hidden;
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #CBD5E1;
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #94A3B8;
+    }
+
+    /* ==========================================
+       2. LOGIN & AUTH SCREEN
+       ========================================== */
+    .login-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: radial-gradient(circle at top right, #1e3a8a, #0f172a);
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      transition: var(--transition-normal);
+    }
+
+    .login-screen.hidden {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .login-card {
+      background: rgba(255, 255, 255, 0.04);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: var(--radius-lg);
+      padding: 40px;
+      width: 100%;
+      max-width: 900px;
+      text-align: center;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+      animation: floatUp 0.6s ease;
+    }
+
+    @keyframes floatUp {
+      from { transform: translateY(30px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    .login-logo {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      color: white;
+      font-size: 1.8rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    .login-logo svg {
+      color: var(--secondary-color);
+    }
+
+    .login-subtitle {
+      color: var(--text-light);
+      font-size: 0.95rem;
+      margin-bottom: 36px;
+    }
+
+    .login-profiles-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 20px;
+      margin-bottom: 24px;
+    }
+
+    .profile-select-card {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: var(--radius-md);
+      padding: 24px 16px;
+      cursor: pointer;
+      transition: var(--transition-normal);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      color: white;
+    }
+
+    .profile-select-card:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: var(--secondary-color);
+      transform: translateY(-5px);
+      box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+    }
+
+    .profile-select-avatar {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background-color: var(--secondary-color);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      font-size: 1.4rem;
+      border: 2.5px solid rgba(255, 255, 255, 0.2);
+      box-shadow: var(--shadow-md);
+    }
+
+    .profile-select-name {
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+
+    .profile-select-role {
+      font-size: 0.75rem;
+      padding: 3px 8px;
+      background-color: rgba(255,255,255,0.1);
+      border-radius: 99px;
+      color: var(--text-light);
+    }
+
+    .profile-select-permission {
+      font-size: 0.7rem;
+      color: var(--text-light);
+      opacity: 0.8;
+      margin-top: 4px;
+      line-height: 1.3;
+    }
+
+    /* Loading overlay inside login */
+    .login-loader {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+      color: white;
+      margin: 40px 0;
+    }
+
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 3.5px solid rgba(255, 255, 255, 0.1);
+      border-top-color: var(--secondary-color);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    /* ==========================================
+       3. APP LAYOUT SKELETON
+       ========================================== */
+    .sidebar-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0,0,0,0.4);
+      z-index: 40;
+      opacity: 0;
+      visibility: hidden;
+      transition: var(--transition-normal);
+    }
+
+    aside {
+      width: 260px;
+      background-color: var(--sidebar-bg);
+      color: var(--sidebar-text-active);
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      position: fixed;
+      left: 0;
+      top: 0;
+      z-index: 50;
+      transition: var(--transition-normal);
+      border-right: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .sidebar-logo {
+      padding: 24px 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+
+    .sidebar-logo svg {
+      color: var(--secondary-color);
+      flex-shrink: 0;
+    }
+
+    .brand-name {
+      font-size: 1.15rem;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      background: linear-gradient(135deg, #FFFFFF, var(--text-light));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .sidebar-nav {
+      flex: 1;
+      padding: 20px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      overflow-y: auto;
+    }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 12px 16px;
+      color: var(--sidebar-text);
+      text-decoration: none;
+      border-radius: var(--radius-sm);
+      font-size: 0.9rem;
+      font-weight: 500;
+      transition: var(--transition-fast);
+      cursor: pointer;
+      border: 1px solid transparent;
+    }
+
+    .nav-item:hover {
+      background-color: var(--sidebar-hover);
+      color: var(--sidebar-text-active);
+    }
+
+    .nav-item.active {
+      background-color: var(--sidebar-active);
+      color: var(--sidebar-text-active);
+      border-left: 3px solid var(--secondary-color);
+    }
+
+    .sidebar-footer {
+      padding: 16px 20px;
+      border-top: 1px solid rgba(255,255,255,0.05);
+      font-size: 0.75rem;
+      color: var(--text-light);
+      line-height: 1.4;
+    }
+
+    .main-wrapper {
+      flex: 1;
+      margin-left: 260px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      transition: var(--transition-normal);
+      width: calc(100% - 260px);
+    }
+
+    /* Header styling */
+    header {
+      height: 70px;
+      background-color: var(--card-bg);
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 32px;
+      position: sticky;
+      top: 0;
+      z-index: 30;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .menu-toggle {
+      display: none;
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--text-main);
+    }
+
+    /* PROJECT SELECTOR DROPDOWN */
+    .project-selector-container {
+      position: relative;
+    }
+
+    .project-badge-selector {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background-color: #EFF6FF;
+      color: var(--secondary-color);
+      padding: 8px 16px;
+      border-radius: 9999px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      border: 1px solid #DBEAFE;
+      cursor: pointer;
+      transition: var(--transition-fast);
+      user-select: none;
+    }
+
+    .project-badge-selector span {
+      display: inline-block;
+      max-width: 200px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      vertical-align: middle;
+    }
+
+    .project-badge-selector:hover {
+      background-color: #DBEAFE;
+    }
+
+    .project-dropdown {
+      position: absolute;
+      top: 110%;
+      left: 0;
+      background-color: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-lg);
+      width: 280px;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(10px);
+      transition: var(--transition-fast);
+      z-index: 200;
+    }
+
+    .project-dropdown.open {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+
+    .project-dropdown-title {
+      padding: 12px 16px 8px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .project-dropdown-list {
+      max-height: 240px;
+      overflow-y: auto;
+      padding: 6px;
+    }
+
+    .project-dropdown-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 12px;
+      border-radius: var(--radius-sm);
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: var(--text-main);
+      cursor: pointer;
+      transition: var(--transition-fast);
+    }
+
+    .project-dropdown-item:hover {
+      background-color: #F1F5F9;
+    }
+
+    .project-dropdown-item.active {
+      background-color: #EFF6FF;
+      color: var(--secondary-color);
+      font-weight: 600;
+    }
+
+    .header-center {
+      width: 35%;
+      max-width: 400px;
+      position: relative;
+    }
+
+    .global-search-container {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .global-search-container svg {
+      position: absolute;
+      left: 14px;
+      color: var(--text-light);
+      pointer-events: none;
+    }
+
+    .global-search-input {
+      width: 100%;
+      padding: 10px 14px 10px 42px;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      font-size: 0.85rem;
+      outline: none;
+      transition: var(--transition-fast);
+      background-color: #F8FAFC;
+    }
+
+    .global-search-input:focus {
+      border-color: var(--secondary-color);
+      background-color: var(--card-bg);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .notification-btn {
+      position: relative;
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--text-muted);
+      padding: 6px;
+      border-radius: 50%;
+      transition: var(--transition-fast);
+    }
+
+    .notification-btn:hover {
+      background-color: #F1F5F9;
+      color: var(--text-main);
+    }
+
+    .notification-badge {
+      position: absolute;
+      top: 4px;
+      right: 4px;
+      width: 8px;
+      height: 8px;
+      background-color: var(--danger-color);
+      border-radius: 50%;
+      border: 2px solid var(--card-bg);
+    }
+
+    /* USER PROFILE HEADER & DROPDOWN */
+    .user-profile-container {
+      position: relative;
+    }
+
+    .user-profile {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding-left: 20px;
+      border-left: 1px solid var(--border-color);
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .user-avatar {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background-color: var(--primary-color);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      font-size: 0.9rem;
+      box-shadow: var(--shadow-sm);
+      border: 2px solid #E2E8F0;
+    }
+
+    .user-info {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .user-name {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .user-role {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    .profile-dropdown {
+      position: absolute;
+      top: 115%;
+      right: 0;
+      background-color: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-lg);
+      width: 220px;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(10px);
+      transition: var(--transition-fast);
+      z-index: 200;
+    }
+
+    .profile-dropdown.open {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+
+    .profile-dropdown-header {
+      padding: 16px;
+      border-bottom: 1px solid var(--border-color);
+      font-size: 0.8rem;
+    }
+
+    .profile-dropdown-email {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      word-break: break-all;
+    }
+
+    .profile-dropdown-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 12px 16px;
+      font-size: 0.85rem;
+      color: var(--text-main);
+      cursor: pointer;
+      transition: var(--transition-fast);
+    }
+
+    .profile-dropdown-item:hover {
+      background-color: #F8FAFC;
+      color: var(--secondary-color);
+    }
+
+    .profile-dropdown-item.logout-btn {
+      color: var(--danger-color);
+      border-top: 1px solid var(--border-color);
+    }
+
+    .profile-dropdown-item.logout-btn:hover {
+      background-color: #FEF2F2;
+      color: var(--danger-color);
+    }
+
+    /* Main Container */
+    main {
+      flex: 1;
+      padding: 32px;
+      max-width: 1600px;
+      width: 100%;
+      margin: 0 auto;
+    }
+
+    .section-container {
+      display: none;
+      animation: fadeIn var(--transition-normal);
+    }
+
+    .section-container.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Page Header Info */
+    .page-title-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 28px;
+    }
+
+    .page-title-row h1 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--primary-color);
+    }
+
+    .page-subtitle {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    /* ==========================================
+       4. REUSABLE COMPONENTS
+       ========================================== */
+    /* Cards Grid */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 20px;
+      margin-bottom: 32px;
+    }
+
+    .stat-card {
+      background-color: var(--card-bg);
+      border-radius: var(--radius-md);
+      padding: 24px;
+      border: 1px solid var(--border-color);
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      position: relative;
+      overflow: hidden;
+      transition: var(--transition-normal);
+      cursor: pointer;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-4px);
+      box-shadow: var(--shadow-lg);
+      border-color: #CBD5E1;
+    }
+
+    .stat-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 4px;
+      height: 100%;
+      background-color: var(--secondary-color);
+      opacity: 0;
+      transition: var(--transition-fast);
+    }
+
+    .stat-card:hover::before {
+      opacity: 1;
+    }
+
+    .stat-card-total::before { background-color: var(--secondary-color); }
+    .stat-card-stock::before { background-color: var(--primary-color); }
+    .stat-card-today::before { background-color: var(--success-color); }
+    .stat-card-purchase::before { background-color: #8B5CF6; }
+    .stat-card-transfer::before { background-color: var(--warning-color); }
+    .stat-card-alert::before { background-color: var(--danger-color); }
+
+    .stat-details {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .stat-title {
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .stat-value {
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--text-main);
+      line-height: 1;
+    }
+
+    .stat-subtitle {
+      font-size: 0.75rem;
+      color: var(--text-light);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .stat-icon {
+      width: 46px;
+      height: 46px;
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.25rem;
+    }
+
+    .stat-card-total .stat-icon { background-color: #EFF6FF; color: var(--secondary-color); }
+    .stat-card-stock .stat-icon { background-color: #F0FDF4; color: var(--primary-color); }
+    .stat-card-today .stat-icon { background-color: #F0FDF4; color: var(--success-color); }
+    .stat-card-purchase .stat-icon { background-color: #F5F3FF; color: #8B5CF6; }
+    .stat-card-transfer .stat-icon { background-color: #FFFBEB; color: var(--warning-color); }
+    .stat-card-alert .stat-icon { background-color: #FEF2F2; color: var(--danger-color); }
+
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px 20px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      border-radius: var(--radius-sm);
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: var(--transition-fast);
+      outline: none;
+    }
+
+    .btn-primary {
+      background-color: var(--secondary-color);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background-color: #1D4ED8;
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+    }
+
+    .btn-secondary {
+      background-color: #F1F5F9;
+      color: var(--text-main);
+      border-color: var(--border-color);
+    }
+
+    .btn-secondary:hover {
+      background-color: #E2E8F0;
+    }
+
+    .btn-outline {
+      background-color: transparent;
+      border-color: var(--border-color);
+      color: var(--text-muted);
+    }
+
+    .btn-outline:hover {
+      background-color: #F8FAFC;
+      color: var(--text-main);
+      border-color: var(--text-muted);
+    }
+
+    .btn-danger {
+      background-color: #FEF2F2;
+      color: var(--danger-color);
+      border-color: #FEE2E2;
+    }
+
+    .btn-danger:hover {
+      background-color: var(--danger-color);
+      color: white;
+    }
+
+    .btn-sm {
+      padding: 6px 12px;
+      font-size: 0.75rem;
+      border-radius: 6px;
+    }
+
+    /* Badges */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 10px;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .badge-success { background-color: #DCFCE7; color: #15803D; }
+    .badge-warning { background-color: #FEF3C7; color: #B45309; }
+    .badge-danger { background-color: #FEE2E2; color: #B91C1C; }
+    .badge-info { background-color: #E0F2FE; color: #0369A1; }
+    .badge-neutral { background-color: #F1F5F9; color: #475569; }
+
+    /* Tables & Search Bars */
+    .content-card {
+      background-color: var(--card-bg);
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-color);
+      box-shadow: var(--shadow-sm);
+      overflow: hidden;
+      margin-bottom: 24px;
+    }
+
+    .card-header {
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .card-header h2 {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--primary-color);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .table-controls {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .search-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .search-wrapper svg {
+      position: absolute;
+      left: 12px;
+      color: var(--text-light);
+      pointer-events: none;
+    }
+
+    .search-input {
+      padding: 8px 12px 8px 36px;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      font-size: 0.8rem;
+      outline: none;
+      background-color: #F8FAFC;
+      transition: var(--transition-fast);
+      min-width: 200px;
+    }
+
+    .search-input:focus {
+      border-color: var(--secondary-color);
+      background-color: var(--card-bg);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+
+    .select-input {
+      padding: 8px 12px;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      font-size: 0.8rem;
+      outline: none;
+      background-color: #F8FAFC;
+      color: var(--text-main);
+      cursor: pointer;
+      transition: var(--transition-fast);
+    }
+
+    .select-input:focus {
+      border-color: var(--secondary-color);
+    }
+
+    .table-container {
+      overflow-x: auto;
+      width: 100%;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+    }
+
+    thead {
+      background-color: #F8FAFC;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    thead th {
+      padding: 14px 24px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    tbody tr {
+      border-bottom: 1px solid var(--border-color);
+      transition: var(--transition-fast);
+    }
+
+    tbody tr:last-child {
+      border-bottom: none;
+    }
+
+    tbody tr:hover {
+      background-color: #F8FAFC;
+    }
+
+    tbody td {
+      padding: 16px 24px;
+      font-size: 0.85rem;
+      color: var(--text-main);
+      vertical-align: middle;
+    }
+
+    .td-bold {
+      font-weight: 600;
+      color: var(--primary-color);
+    }
+
+    .action-cell {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .icon-btn {
+      width: 32px;
+      height: 32px;
+      border-radius: 6px;
+      border: 1px solid var(--border-color);
+      background: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: var(--transition-fast);
+    }
+
+    .icon-btn:hover {
+      background-color: #F1F5F9;
+      color: var(--text-main);
+    }
+
+    .icon-btn-edit:hover {
+      color: var(--secondary-color);
+      border-color: #BFDBFE;
+      background-color: #EFF6FF;
+    }
+
+    .icon-btn-delete:hover {
+      color: var(--danger-color);
+      border-color: #FECACA;
+      background-color: #FEF2F2;
+    }
+
+    /* Empty state */
+    .empty-state {
+      padding: 48px;
+      text-align: center;
+      color: var(--text-muted);
+    }
+
+    .empty-state svg {
+      color: var(--text-light);
+      margin-bottom: 16px;
+    }
+
+    .empty-state h3 {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--text-main);
+      margin-bottom: 4px;
+    }
+
+    .empty-state p {
+      font-size: 0.8rem;
+    }
+
+    /* Forms */
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+      padding: 24px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .form-group-full {
+      grid-column: 1 / -1;
+    }
+
+    .form-group label {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      padding: 11px 14px;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      font-size: 0.85rem;
+      outline: none;
+      background-color: #F8FAFC;
+      transition: var(--transition-fast);
+      width: 100%;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      border-color: var(--secondary-color);
+      background-color: var(--card-bg);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+
+    .form-group textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
+
+    .form-actions {
+      padding: 20px 24px;
+      border-top: 1px solid var(--border-color);
+      display: flex;
+      justify-content: flex-end;
+      gap: 12px;
+      background-color: #F8FAFC;
+    }
+
+    /* ==========================================
+       5. PAGE-SPECIFIC STYLE DETAILS
+       ========================================== */
+    /* Dashboard: Recent Activities List */
+    .recent-activities-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .activity-item {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 16px 24px;
+      border-bottom: 1px solid var(--border-color);
+      font-size: 0.85rem;
+    }
+
+    .activity-item:last-child {
+      border-bottom: none;
+    }
+
+    .activity-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .activity-icon-incoming { background-color: #DCFCE7; color: #15803D; }
+    .activity-icon-outgoing { background-color: #FEE2E2; color: #B91C1C; }
+    .activity-icon-neutral { background-color: #F1F5F9; color: #475569; }
+
+    .activity-details {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .activity-title {
+      font-weight: 500;
+      color: var(--text-main);
+    }
+
+    .activity-desc {
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    .activity-time {
+      font-size: 0.75rem;
+      color: var(--text-light);
+      font-weight: 500;
+    }
+
+    /* Dashboard: Layout details */
+    .dashboard-layout-row {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 24px;
+      align-items: start;
+    }
+
+    @media (max-width: 1024px) {
+      .dashboard-layout-row {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Reports Charts & Layout */
+    .charts-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      margin-bottom: 24px;
+    }
+
+    @media (max-width: 900px) {
+      .charts-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .chart-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      min-height: 220px;
+    }
+
+    /* SVG Bar Chart Styling */
+    .bar-chart-svg {
+      width: 100%;
+      height: 220px;
+    }
+
+    .bar-rect {
+      fill: var(--secondary-color);
+      transition: fill var(--transition-fast), height var(--transition-normal), y var(--transition-normal);
+      cursor: pointer;
+    }
+
+    .bar-rect:hover {
+      fill: var(--primary-color);
+    }
+
+    .bar-label {
+      font-size: 10px;
+      fill: var(--text-muted);
+      text-anchor: middle;
+    }
+
+    .bar-value {
+      font-size: 10px;
+      font-weight: 600;
+      fill: var(--text-main);
+      text-anchor: middle;
+    }
+
+    /* SVG Donut Chart Styling */
+    .donut-chart-svg {
+      width: 180px;
+      height: 180px;
+      transform: rotate(-90deg);
+    }
+
+    .donut-segment {
+      fill: none;
+      stroke-width: 24;
+      transition: stroke-dasharray var(--transition-normal);
+    }
+
+    .donut-hole {
+      fill: var(--card-bg);
+    }
+
+    .chart-legend {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-left: 24px;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: var(--text-muted);
+    }
+
+    .legend-color {
+      width: 12px;
+      height: 12px;
+      border-radius: 3px;
+      flex-shrink: 0;
+    }
+
+    .reports-low-stock-bar {
+      width: 100%;
+      height: 8px;
+      background-color: #E2E8F0;
+      border-radius: 99px;
+      overflow: hidden;
+      margin-top: 6px;
+    }
+
+    .reports-low-stock-progress {
+      height: 100%;
+      border-radius: 99px;
+    }
+
+    /* ==========================================
+       6. MODAL SYSTEM
+       ========================================== */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(15, 23, 42, 0.4);
+      backdrop-filter: blur(4px);
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      visibility: hidden;
+      transition: var(--transition-normal);
+    }
+
+    .modal-overlay.open {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .modal-card {
+      background-color: var(--card-bg);
+      border-radius: var(--radius-lg);
+      width: 90%;
+      max-width: 550px;
+      border: 1px solid var(--border-color);
+      box-shadow: var(--shadow-lg);
+      overflow: hidden;
+      transform: scale(0.95);
+      transition: var(--transition-normal);
+    }
+
+    .modal-overlay.open .modal-card {
+      transform: scale(1);
+    }
+
+    .modal-header {
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background-color: #F8FAFC;
+    }
+
+    .modal-header h3 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--primary-color);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .modal-close {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--text-light);
+      transition: var(--transition-fast);
+    }
+
+    .modal-close:hover {
+      color: var(--text-main);
+    }
+
+    /* ==========================================
+       7. TOAST SYSTEM
+       ========================================== */
+    .toast-container {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      z-index: 110;
+    }
+
+    .toast {
+      background-color: var(--card-bg);
+      color: var(--text-main);
+      padding: 16px 20px;
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-lg);
+      border-left: 4px solid var(--secondary-color);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 300px;
+      max-width: 450px;
+      transform: translateX(120%);
+      transition: var(--transition-normal);
+      font-size: 0.85rem;
+      font-weight: 500;
+    }
+
+    .toast.show {
+      transform: translateX(0);
+    }
+
+    .toast-success { border-left-color: var(--success-color); }
+    .toast-warning { border-left-color: var(--warning-color); }
+    .toast-danger { border-left-color: var(--danger-color); }
+
+    .toast-icon {
+      flex-shrink: 0;
+    }
+
+    .toast-success .toast-icon { color: var(--success-color); }
+    .toast-warning .toast-icon { color: var(--warning-color); }
+    .toast-danger .toast-icon { color: var(--danger-color); }
+
+    .toast-content {
+      flex: 1;
+    }
+
+    /* ==========================================
+       8. FOOTER
+       ========================================== */
+    footer {
+      padding: 24px 32px;
+      border-top: 1px solid var(--border-color);
+      background-color: var(--card-bg);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    /* ==========================================
+       9. RESPONSIVE MEDIA QUERIES
+       ========================================== */
+    @media (max-width: 768px) {
+      aside {
+        transform: translateX(-100%);
+      }
+
+      aside.sidebar-open {
+        transform: translateX(0);
+      }
+
+      .sidebar-overlay.active {
+        opacity: 1;
+        visibility: visible;
+      }
+
+      .main-wrapper {
+        margin-left: 0;
+        width: 100%;
+      }
+
+      header {
+        padding: 0 16px;
+      }
+
+      .menu-toggle {
+        display: block;
+      }
+
+      .header-center {
+        display: none; /* Hide global search on small mobile to save space */
+      }
+
+      .header-right {
+        gap: 12px;
+      }
+
+      .user-profile {
+        padding-left: 8px;
+        border-left: none;
+      }
+
+      .user-info {
+        display: none;
+      }
+
+      .project-badge-selector span {
+        max-width: 100px;
+      }
+
+      main {
+        padding: 16px;
+      }
+
+      .page-title-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+      }
+
+      .page-title-row .btn {
+        width: 100%;
+      }
+
+      .card-header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .table-controls {
+        width: 100%;
+        justify-content: space-between;
+      }
+
+      .search-wrapper, .search-input, .select-input {
+        width: 100%;
+      }
+
+      thead th, tbody td {
+        padding: 10px 12px;
+        font-size: 0.75rem;
+      }
+    }
+
+    @media (max-width: 600px) {
+      .login-card {
+        padding: 24px 16px;
+        margin: 16px;
+        max-width: calc(100% - 32px);
+      }
+      .login-logo {
+        font-size: 1.4rem;
+      }
+      .login-subtitle {
+        margin-bottom: 24px;
+        font-size: 0.85rem;
+      }
+      .login-profiles-grid {
+        grid-template-columns: 1fr;
+        gap: 16px;
+      }
+      .profile-select-card {
+        padding: 16px;
+        flex-direction: row;
+        text-align: left;
+        align-items: center;
+        gap: 16px;
+      }
+      .profile-select-avatar {
+        width: 48px;
+        height: 48px;
+        font-size: 1.1rem;
+      }
+      .profile-select-permission {
+        display: none; /* Hide detailed permissions on small viewports login page */
+      }
+      .form-grid {
+        grid-template-columns: 1fr;
+        padding: 16px;
+        gap: 16px;
+      }
+    }
+
+    /* ==========================================
+       SPLASH SCREEN STYLES
+       ========================================== */
+    .splash-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: radial-gradient(circle at center, #0F172A 0%, #020617 100%);
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      opacity: 1;
+      visibility: visible;
+      transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), 
+                  visibility 0.8s cubic-bezier(0.4, 0, 0.2, 1),
+                  transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .splash-screen.fade-out {
+      opacity: 0;
+      visibility: hidden;
+      transform: scale(1.05);
+    }
+
+    .splash-content {
+      text-align: center;
+      max-width: 500px;
+      width: 90%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .splash-logo-container {
+      width: 120px;
+      height: 120px;
+      margin-bottom: 28px;
+    }
+
+    .splash-svg-logo {
+      width: 100%;
+      height: 100%;
+    }
+
+    /* SVG Stroke Draw Animation */
+    .draw-line {
+      stroke-dasharray: 150;
+      stroke-dashoffset: 150;
+      animation: drawLineAnim 2.5s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+    }
+
+    /* Stagger lines drawing */
+    .line-1 { animation-delay: 0.1s; }
+    .line-2 { animation-delay: 0.3s; }
+    .line-3 { animation-delay: 0.3s; }
+    .line-4 { animation-delay: 0.5s; }
+    .line-5 { animation-delay: 0.7s; }
+    .line-6 { animation-delay: 0.8s; }
+    .line-7 { animation-delay: 0.9s; }
+    .line-8 { animation-delay: 1.0s; }
+    .line-9 { animation-delay: 1.2s; }
+    .line-10 { animation-delay: 1.4s; }
+    .line-11 { animation-delay: 1.4s; }
+    .line-12 { animation-delay: 1.6s; }
+    .line-13 { animation-delay: 1.6s; }
+    .line-14 { animation-delay: 1.8s; }
+    .line-15 { animation-delay: 1.8s; }
+    .line-16 { animation-delay: 2.0s; }
+    .line-17 { animation-delay: 2.2s; }
+
+    @keyframes drawLineAnim {
+      to {
+        stroke-dashoffset: 0;
+      }
+    }
+
+    .splash-title {
+      font-size: 2.2rem;
+      font-weight: 800;
+      color: #FFFFFF;
+      letter-spacing: 0.25em;
+      margin-bottom: 8px;
+      opacity: 0;
+      transform: translateY(15px);
+      animation: splashTextFadeIn 1s cubic-bezier(0.25, 1, 0.5, 1) 0.6s forwards;
+    }
+
+    .splash-subtitle {
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: var(--secondary-color);
+      letter-spacing: 0.4em;
+      margin-bottom: 40px;
+      opacity: 0;
+      transform: translateY(10px);
+      animation: splashTextFadeIn 1s cubic-bezier(0.25, 1, 0.5, 1) 1.0s forwards;
+    }
+
+    @keyframes splashTextFadeIn {
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Loader Bar styling */
+    .splash-loader-bar {
+      width: 100%;
+      height: 4px;
+      background-color: rgba(255, 255, 255, 0.08);
+      border-radius: 99px;
+      overflow: hidden;
+      margin-bottom: 12px;
+      opacity: 0;
+      animation: splashElementFadeIn 0.8s ease 1.2s forwards;
+    }
+
+    .splash-loader-progress {
+      width: 0%;
+      height: 100%;
+      background: linear-gradient(to right, var(--secondary-color), var(--success-color));
+      border-radius: 99px;
+      transition: width 0.1s linear;
+    }
+
+    .splash-loading-text {
+      font-size: 0.75rem;
+      color: var(--text-light);
+      opacity: 0;
+      letter-spacing: 0.05em;
+      animation: splashElementFadeIn 0.8s ease 1.4s forwards;
+    }
+
+    @keyframes splashElementFadeIn {
+      to {
+        opacity: 0.7;
+      }
+    }
+
+    /* Skip Intro Button */
+    .splash-skip-btn {
+      position: absolute;
+      bottom: 32px;
+      right: 32px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: rgba(255, 255, 255, 0.6);
+      padding: 8px 18px;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: var(--transition-fast);
+      outline: none;
+      backdrop-filter: blur(4px);
+    }
+
+    .splash-skip-btn:hover {
+      background: rgba(255, 255, 255, 0.1);
+      color: #FFFFFF;
+      border-color: rgba(255, 255, 255, 0.3);
+      transform: translateX(-4px);
+    }
+
+    @media (max-width: 600px) {
+      .splash-title {
+        font-size: 1.5rem;
+        letter-spacing: 0.15em;
+      }
+      .splash-subtitle {
+        font-size: 0.7rem;
+        letter-spacing: 0.3em;
+      }
+      .splash-skip-btn {
+        bottom: 24px;
+        right: 24px;
+        padding: 6px 14px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ==========================================
+       SPLASH SCREEN INTRO ANIMATION
+       ========================================== -->
+  <div id="splash-screen" class="splash-screen">
+    <div class="splash-content">
+      <!-- Animated Logo (Grid Wireframe Building SVG) -->
+      <div class="splash-logo-container">
+        <svg class="splash-svg-logo" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+          <g fill="none" stroke="var(--secondary-color)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <!-- Ground foundation line -->
+            <line class="draw-line line-1" x1="10" y1="90" x2="90" y2="90" />
+            <!-- Main building columns -->
+            <line class="draw-line line-2" x1="30" y1="90" x2="30" y2="30" />
+            <line class="draw-line line-3" x1="70" y1="90" x2="70" y2="30" />
+            <line class="draw-line line-4" x1="50" y1="90" x2="50" y2="20" />
+            <!-- Floor lines -->
+            <line class="draw-line line-5" x1="30" y1="75" x2="70" y2="75" />
+            <line class="draw-line line-6" x1="30" y1="60" x2="70" y2="60" />
+            <line class="draw-line line-7" x1="30" y1="45" x2="70" y2="45" />
+            <!-- Top structure -->
+            <line class="draw-line line-8" x1="30" y1="30" x2="70" y2="30" />
+            <polyline class="draw-line line-9" points="30,30 50,15 70,30" />
+            <!-- Cross beams -->
+            <line class="draw-line line-10" x1="30" y1="90" x2="50" y2="75" />
+            <line class="draw-line line-11" x1="50" y1="75" x2="70" y2="90" />
+            <line class="draw-line line-12" x1="30" y1="75" x2="50" y2="60" />
+            <line class="draw-line line-13" x1="50" y1="60" x2="70" y2="75" />
+            <line class="draw-line line-14" x1="30" y1="60" x2="50" y2="45" />
+            <line class="draw-line line-15" x1="50" y1="45" x2="70" y2="60" />
+            <!-- Crane beam -->
+            <polyline class="draw-line line-16" points="50,15 85,15 85,25" />
+            <line class="draw-line line-17" x1="85" y1="20" x2="75" y2="90" stroke="var(--success-color)" stroke-width="1.5" stroke-dasharray="3,3" />
+          </g>
+        </svg>
+      </div>
+
+      <!-- Text Animations -->
+      <h1 class="splash-title">SK CONSTRUCTION</h1>
+      <p class="splash-subtitle">BUILDING THE FUTURE</p>
+
+      <!-- Progress Loader -->
+      <div class="splash-loader-bar">
+        <div class="splash-loader-progress" id="splash-progress"></div>
+      </div>
+      <p class="splash-loading-text">Initializing Stock Management System...</p>
+    </div>
+
+    <!-- Skip Intro Button -->
+    <button class="splash-skip-btn" onclick="skipSplash()">Skip Intro &rarr;</button>
+  </div>
+
+  <!-- ==========================================
+       SIMULATED LOGIN PAGE
+       ========================================== -->
+  <div id="login-screen" class="login-screen">
+    <div class="login-card">
+      <div class="login-logo">
+        <svg xmlns="http://www.w3.org/2000/svg" width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-hard-hat"><path d="M12 2a10 10 0 0 0-7.38 3.24L8 9h8l3.38-3.76A10 10 0 0 0 12 2Z"/><path d="M2 15h20"/><path d="M22 15a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2Z"/><path d="M12 9v6"/><path d="M8 15v2"/><path d="M16 15v2"/></svg>
+        <span>SK Construction</span>
+      </div>
+      <p class="login-subtitle">Stock Management System — Select a User profile to log in</p>
+      
+      <!-- User profile cards selector -->
+      <div class="login-profiles-grid" id="login-profiles-container">
+        <!-- Rendered via JS based on user database -->
+      </div>
+
+      <div class="login-loader" id="login-loader">
+        <div class="spinner"></div>
+        <p style="font-weight: 500; font-size: 0.9rem;">Authorizing session credentials...</p>
+      </div>
+      
+      <p style="color: rgba(255,255,255,0.4); font-size: 0.75rem; margin-top: 10px;">
+        Demo Credentials Simulation. Version 1.0 (Frontend Only)
+      </p>
+    </div>
+  </div>
+
+  <!-- Sidebar Overlay -->
+  <div id="sidebar-overlay" class="sidebar-overlay"></div>
+
+  <!-- Sidebar Nav -->
+  <aside id="sidebar">
+    <div class="sidebar-logo">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-hard-hat"><path d="M12 2a10 10 0 0 0-7.38 3.24L8 9h8l3.38-3.76A10 10 0 0 0 12 2Z"/><path d="M2 15h20"/><path d="M22 15a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2Z"/><path d="M12 9v6"/><path d="M8 15v2"/><path d="M16 15v2"/></svg>
+      <span class="brand-name">SK Construction</span>
+    </div>
+    
+    <nav class="sidebar-nav" id="sidebar-nav-container">
+      <div class="nav-item active" data-target="dashboard">
+        <i data-lucide="layout-dashboard"></i>
+        <span>Dashboard</span>
+      </div>
+      <div class="nav-item" data-target="stock-entry">
+        <i data-lucide="plus-circle"></i>
+        <span>Stock Entry</span>
+      </div>
+      <div class="nav-item" data-target="inventory">
+        <i data-lucide="boxes"></i>
+        <span>Inventory</span>
+      </div>
+      <div class="nav-item" data-target="transactions">
+        <i data-lucide="history"></i>
+        <span>Transactions</span>
+      </div>
+      <div class="nav-item" data-target="reports">
+        <i data-lucide="bar-chart-3"></i>
+        <span>Reports</span>
+      </div>
+      <div class="nav-item" data-target="users">
+        <i data-lucide="users"></i>
+        <span>Users</span>
+      </div>
+      <div class="nav-item" data-target="settings">
+        <i data-lucide="settings"></i>
+        <span>Settings</span>
+      </div>
+    </nav>
+
+    <div class="sidebar-footer">
+      <strong id="sidebar-footer-company">SK Construction</strong><br>
+      Stock Manager v1.0<br>
+      <span style="opacity: 0.6;">© 2026</span>
+    </div>
+  </aside>
+
+  <!-- Main View Area -->
+  <div class="main-wrapper">
+    <!-- Header -->
+    <header>
+      <div class="header-left">
+        <button id="menu-toggle" class="menu-toggle" aria-label="Toggle Sidebar">
+          <i data-lucide="menu" size="24"></i>
+        </button>
+        
+        <!-- PROJECT SELECTOR badge -->
+        <div class="project-selector-container">
+          <div id="project-selector-badge" class="project-badge-selector" onclick="toggleProjectDropdown(event)">
+            <i data-lucide="building-2" size="14"></i>
+            <span id="badge-project-name">Select Project</span>
+            <i data-lucide="chevron-down" size="12" style="margin-left: 2px;"></i>
+          </div>
+          <div class="project-dropdown" id="project-dropdown">
+            <div class="project-dropdown-title">Switch Active Project</div>
+            <div class="project-dropdown-list" id="project-dropdown-list">
+              <!-- Rendered via JS -->
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="header-center">
+        <div class="global-search-container">
+          <i data-lucide="search" size="16"></i>
+          <input type="text" class="global-search-input" id="global-search" placeholder="Quick search inventory items...">
+        </div>
+      </div>
+
+      <div class="header-right">
+        <button class="notification-btn" aria-label="Notifications" id="notification-bell">
+          <i data-lucide="bell" size="20"></i>
+          <span id="notification-dot" class="notification-badge"></span>
+        </button>
+        
+        <!-- USER PROFILE dropdown toggle -->
+        <div class="user-profile-container">
+          <div class="user-profile" id="user-profile-toggle" onclick="toggleProfileDropdown(event)">
+            <div class="user-avatar" id="avatar-initials">RK</div>
+            <div class="user-info">
+              <span class="user-name" id="profile-name">
+                Rajesh Kumar 
+                <i data-lucide="chevron-down" size="12"></i>
+              </span>
+              <span class="user-role" id="profile-role">Administrator</span>
+            </div>
+          </div>
+          <div class="profile-dropdown" id="profile-dropdown">
+            <div class="profile-dropdown-header">
+              <strong id="dropdown-full-name">Rajesh Kumar</strong>
+              <div class="profile-dropdown-email" id="dropdown-email">contact@skconstruction.com</div>
+            </div>
+            <div class="profile-dropdown-item" onclick="switchTab('settings')">
+              <i data-lucide="sliders" size="14"></i> System Settings
+            </div>
+            <div class="profile-dropdown-item" onclick="switchTab('users')">
+              <i data-lucide="users" size="14"></i> User Management
+            </div>
+            <div class="profile-dropdown-item logout-btn" onclick="handleLogout()">
+              <i data-lucide="log-out" size="14"></i> Logout
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Main Dynamic Content Container -->
+    <main>
+      <!-- ==========================================
+           SECTION 1: DASHBOARD
+           ========================================== -->
+      <section id="dashboard" class="section-container active">
+        <div class="page-title-row">
+          <div>
+            <h1>Dashboard</h1>
+            <p class="page-subtitle" id="dashboard-site-sub">Real-time overview of construction inventory and stock flow</p>
+          </div>
+          <button class="btn btn-primary" onclick="switchTab('stock-entry')" id="dash-action-btn">
+            <i data-lucide="plus"></i> New Stock Entry
+          </button>
+        </div>
+
+        <!-- Dashboard Stats Grid -->
+        <div class="stats-grid">
+          <div class="stat-card stat-card-total" onclick="switchTab('inventory')">
+            <div class="stat-details">
+              <span class="stat-title">Total Items</span>
+              <span class="stat-value" id="dash-total-items">0</span>
+              <span class="stat-subtitle"><i data-lucide="clock" size="12"></i> Registered globally</span>
+            </div>
+            <div class="stat-icon">
+              <i data-lucide="box"></i>
+            </div>
+          </div>
+
+          <div class="stat-card stat-card-stock" onclick="switchTab('inventory')">
+            <div class="stat-details">
+              <span class="stat-title">Project Stock</span>
+              <span class="stat-value" id="dash-total-stock">0</span>
+              <span class="stat-subtitle"><i data-lucide="database" size="12"></i> Units at this site</span>
+            </div>
+            <div class="stat-icon">
+              <i data-lucide="boxes"></i>
+            </div>
+          </div>
+
+          <div class="stat-card stat-card-today" onclick="switchTab('transactions')">
+            <div class="stat-details">
+              <span class="stat-title">Today's Txns</span>
+              <span class="stat-value" id="dash-today-txns">0</span>
+              <span class="stat-subtitle" id="dash-today-txn-desc">0 Purchases, 0 Transfers</span>
+            </div>
+            <div class="stat-icon">
+              <i data-lucide="arrow-left-right"></i>
+            </div>
+          </div>
+
+          <div class="stat-card stat-card-purchase">
+            <div class="stat-details">
+              <span class="stat-title">Project Purchases</span>
+              <span class="stat-value" id="dash-purchases">0</span>
+              <span class="stat-subtitle"><i data-lucide="shopping-cart" size="12"></i> Items purchased</span>
+            </div>
+            <div class="stat-icon">
+              <i data-lucide="shopping-bag"></i>
+            </div>
+          </div>
+
+          <div class="stat-card stat-card-transfer">
+            <div class="stat-details">
+              <span class="stat-title">Site Transfers</span>
+              <span class="stat-value" id="dash-transfers">0</span>
+              <span class="stat-subtitle"><i data-lucide="truck" size="12"></i> Logged shipments</span>
+            </div>
+            <div class="stat-icon">
+              <i data-lucide="arrow-right-left"></i>
+            </div>
+          </div>
+
+          <div class="stat-card stat-card-alert" onclick="switchTab('inventory', 'low-stock')">
+            <div class="stat-details">
+              <span class="stat-title">Low Stock Alerts</span>
+              <span class="stat-value" id="dash-low-alerts" style="color: var(--danger-color);">0</span>
+              <span class="stat-subtitle" style="color: var(--danger-color); font-weight: 500;">
+                <i data-lucide="alert-triangle" size="12"></i> On active project
+              </span>
+            </div>
+            <div class="stat-icon">
+              <i data-lucide="alert-circle"></i>
+            </div>
+          </div>
+        </div>
+
+        <div class="dashboard-layout-row">
+          <!-- Recent Transactions -->
+          <div class="content-card">
+            <div class="card-header">
+              <h2><i data-lucide="clock" size="18"></i> Recent Project Transactions</h2>
+              <button class="btn btn-secondary btn-sm" onclick="switchTab('transactions')">View All</button>
+            </div>
+            <ul class="recent-activities-list" id="dash-recent-activities">
+              <!-- Rendered via JS -->
+            </ul>
+          </div>
+
+          <!-- Quick Actions & Status -->
+          <div class="content-card">
+            <div class="card-header">
+              <h2><i data-lucide="compass" size="18"></i> Quick Actions</h2>
+            </div>
+            <div style="padding: 20px; display: flex; flex-direction: column; gap: 12px;" id="dashboard-quick-actions">
+              <!-- Rendered dynamically depending on role permissions -->
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==========================================
+           SECTION 2: STOCK ENTRY
+           ========================================== -->
+      <section id="stock-entry" class="section-container">
+        <div class="page-title-row">
+          <div>
+            <h1>Stock Entry Form</h1>
+            <p class="page-subtitle">Record incoming stock, internal transfers, repairs, or scrap events</p>
+          </div>
+        </div>
+
+        <div class="content-card">
+          <div class="card-header">
+            <h2><i data-lucide="edit-3" size="18"></i> Transaction details</h2>
+          </div>
+          <form id="stock-entry-form" onsubmit="handleStockEntrySubmit(event)">
+            <div class="form-grid">
+              <!-- Date -->
+              <div class="form-group">
+                <label for="entry-date">Date *</label>
+                <input type="date" id="entry-date" required>
+              </div>
+
+              <!-- Item Dropdown/Input -->
+              <div class="form-group">
+                <label for="entry-item">Item Name *</label>
+                <select id="entry-item" required onchange="handleEntryItemChange()">
+                  <!-- Dynamically populated -->
+                </select>
+              </div>
+
+              <!-- Category -->
+              <div class="form-group">
+                <label for="entry-category">Category *</label>
+                <select id="entry-category" required>
+                  <option value="">Select Category</option>
+                  <option value="Fixed Asset">Fixed Asset</option>
+                  <option value="Machinery">Machinery</option>
+                  <option value="Electrical">Electrical</option>
+                  <option value="Permanent">Permanent</option>
+                  <option value="Cylinder">Cylinder</option>
+                </select>
+              </div>
+
+              <!-- Quantity -->
+              <div class="form-group">
+                <label for="entry-quantity">Quantity *</label>
+                <input type="number" id="entry-quantity" min="1" step="any" placeholder="e.g. 120" required>
+              </div>
+
+              <!-- Unit -->
+              <div class="form-group">
+                <label for="entry-unit">Unit *</label>
+                <select id="entry-unit" required>
+                  <option value="">Select Unit</option>
+                  <option value="Pcs">Pcs (Pieces)</option>
+                  <option value="Tons">Tons</option>
+                  <option value="Sets">Sets</option>
+                  <option value="Nos">Nos (Numbers)</option>
+                  <option value="Cylinders">Cylinders</option>
+                  <option value="Meters">Meters</option>
+                </select>
+              </div>
+
+              <!-- Transaction Type -->
+              <div class="form-group">
+                <label for="entry-type">Transaction Type *</label>
+                <select id="entry-type" required onchange="handleTransactionTypeChange()">
+                  <option value="">Select Transaction Type</option>
+                  <option value="Purchase">Purchase (Inbound to Active Project)</option>
+                  <option value="Received From Other Site">Received From Other Site (Inbound)</option>
+                  <option value="Transfer To Other Site">Transfer To Other Site (Outbound)</option>
+                  <option value="Repair">Repair (Outbound to Workshop)</option>
+                  <option value="Scrap">Scrap (Outbound)</option>
+                  <option value="Rework">Rework (Inbound / Restored)</option>
+                  <option value="Manual Adjustment">Manual Adjustment</option>
+                </select>
+              </div>
+
+              <!-- Source -->
+              <div class="form-group" id="group-entry-source">
+                <label for="entry-source" id="lbl-entry-source">Source *</label>
+                <input type="text" id="entry-source" placeholder="e.g. Supplier name" required>
+              </div>
+
+              <!-- Destination -->
+              <div class="form-group" id="group-entry-destination">
+                <label for="entry-destination" id="lbl-entry-destination">Destination *</label>
+                <input type="text" id="entry-destination" placeholder="e.g. Store Yard" required>
+              </div>
+
+              <!-- Vehicle Number -->
+              <div class="form-group">
+                <label for="entry-vehicle">Vehicle Number</label>
+                <input type="text" id="entry-vehicle" placeholder="e.g. KA-01-A-1234">
+              </div>
+
+              <!-- Driver Name -->
+              <div class="form-group">
+                <label for="entry-driver">Driver Name</label>
+                <input type="text" id="entry-driver" placeholder="e.g. Ram Singh">
+              </div>
+
+              <!-- Remarks -->
+              <div class="form-group form-group-full">
+                <label for="entry-remarks">Remarks / Description</label>
+                <textarea id="entry-remarks" placeholder="Enter transaction reference details, notes, etc."></textarea>
+              </div>
+            </div>
+
+            <div class="form-actions">
+              <button type="button" class="btn btn-secondary" onclick="resetStockEntryForm()">Reset</button>
+              <button type="submit" class="btn btn-primary"><i data-lucide="check"></i> Save Entry</button>
+            </div>
+          </form>
+        </div>
+      </section>
+
+      <!-- ==========================================
+           SECTION 3: INVENTORY
+           ========================================== -->
+      <section id="inventory" class="section-container">
+        <div class="page-title-row">
+          <div>
+            <h1>Material Inventory Balance</h1>
+            <p class="page-subtitle" id="inventory-site-sub">Current stock levels, categories, units, and safety status</p>
+          </div>
+          <button class="btn btn-primary" onclick="openAddItemModal()" id="inv-add-material-btn">
+            <i data-lucide="package-plus"></i> Add New Material
+          </button>
+        </div>
+
+        <div class="content-card">
+          <div class="card-header">
+            <h2><i data-lucide="boxes" size="18"></i> Stock Records</h2>
+            <div class="table-controls">
+              <!-- Search -->
+              <div class="search-wrapper">
+                <i data-lucide="search" size="14"></i>
+                <input type="text" class="search-input" id="inv-search" placeholder="Search item name..." oninput="filterInventory()">
+              </div>
+              <!-- Category Filter -->
+              <select class="select-input" id="inv-filter-category" onchange="filterInventory()">
+                <option value="All">All Categories</option>
+                <option value="Fixed Asset">Fixed Asset</option>
+                <option value="Machinery">Machinery</option>
+                <option value="Electrical">Electrical</option>
+                <option value="Permanent">Permanent</option>
+                <option value="Cylinder">Cylinder</option>
+              </select>
+              <!-- Status Filter -->
+              <select class="select-input" id="inv-filter-status" onchange="filterInventory()">
+                <option value="All">All Statuses</option>
+                <option value="Available">Available</option>
+                <option value="Low Stock">Low Stock</option>
+                <option value="Out of Stock">Out of Stock</option>
+              </select>
+              <!-- Sort -->
+              <button class="btn btn-secondary btn-sm" onclick="toggleInventorySort()" id="inv-sort-btn">
+                Sort Item A-Z <i data-lucide="sort-asc" size="14"></i>
+              </button>
+            </div>
+          </div>
+
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>Item Name</th>
+                  <th>Category</th>
+                  <th>Unit</th>
+                  <th>Available Quantity</th>
+                  <th>Status</th>
+                  <th>Min Alert Qty</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="inventory-tbody">
+                <!-- Dynamically populated -->
+              </tbody>
+            </table>
+          </div>
+          <div id="inv-empty-state" class="empty-state" style="display: none;">
+            <i data-lucide="package" size="48"></i>
+            <h3>No materials match your filter</h3>
+            <p>Try resetting the search keywords or filters.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==========================================
+           SECTION 4: TRANSACTIONS HISTORY
+           ========================================== -->
+      <section id="transactions" class="section-container">
+        <div class="page-title-row">
+          <div>
+            <h1>Transaction Ledger</h1>
+            <p class="page-subtitle" id="ledger-site-sub">Historical logs of all inventory inbound and outbound movements</p>
+          </div>
+        </div>
+
+        <div class="content-card">
+          <div class="card-header">
+            <h2><i data-lucide="history" size="18"></i> Ledger Entries</h2>
+            <div class="table-controls">
+              <!-- Search -->
+              <div class="search-wrapper">
+                <i data-lucide="search" size="14"></i>
+                <input type="text" class="search-input" id="txn-search" placeholder="Search vehicle, driver, remarks..." oninput="filterTransactions()">
+              </div>
+              <!-- Type Filter -->
+              <select class="select-input" id="txn-filter-type" onchange="filterTransactions()">
+                <option value="All">All Types</option>
+                <option value="Purchase">Purchase</option>
+                <option value="Received From Other Site">Received From Other Site</option>
+                <option value="Transfer To Other Site">Transfer To Other Site</option>
+                <option value="Repair">Repair</option>
+                <option value="Scrap">Scrap</option>
+                <option value="Rework">Rework</option>
+                <option value="Manual Adjustment">Manual Adjustment</option>
+              </select>
+              <!-- Project Scope Filter -->
+              <select class="select-input" id="txn-filter-scope" onchange="filterTransactions()">
+                <option value="Active">Current Project Only</option>
+                <option value="All">All Construction Sites</option>
+              </select>
+              <!-- Date Range -->
+              <input type="date" class="select-input" id="txn-filter-start" onchange="filterTransactions()">
+              <input type="date" class="select-input" id="txn-filter-end" onchange="filterTransactions()">
+              <button class="btn btn-secondary btn-sm" onclick="clearTransactionFilters()">Reset</button>
+            </div>
+          </div>
+
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Item Name</th>
+                  <th>Type</th>
+                  <th>Quantity</th>
+                  <th>Vehicle Info</th>
+                  <th>Source</th>
+                  <th>Destination</th>
+                  <th>Processed By</th>
+                  <th>Remarks</th>
+                </tr>
+              </thead>
+              <tbody id="transactions-tbody">
+                <!-- Dynamically populated -->
+              </tbody>
+            </table>
+          </div>
+          <div id="txn-empty-state" class="empty-state" style="display: none;">
+            <i data-lucide="file-text" size="48"></i>
+            <h3>No transaction records found</h3>
+            <p>Adjust your search text, category, or date range settings.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==========================================
+           SECTION 5: REPORTS
+           ========================================== -->
+      <section id="reports" class="section-container">
+        <div class="page-title-row">
+          <div>
+            <h1>Analytics & Reports</h1>
+            <p class="page-subtitle" id="reports-site-sub">Summarized metrics, inventory distribution, and system logs export</p>
+          </div>
+          <div style="display: flex; gap: 10px;">
+            <button class="btn btn-secondary" onclick="exportData('Excel')">
+              <i data-lucide="file-spreadsheet" style="color: var(--success-color);"></i> Export Excel
+            </button>
+            <button class="btn btn-primary" onclick="exportData('PDF')">
+              <i data-lucide="file-text"></i> Export PDF
+            </button>
+          </div>
+        </div>
+
+        <!-- Dashboard Cards replicated (Display dashboard cards only on reports) -->
+        <div class="stats-grid">
+          <div class="stat-card stat-card-total">
+            <div class="stat-details">
+              <span class="stat-title">Current Stock Value</span>
+              <span class="stat-value" id="rep-total-stock">0</span>
+              <span class="stat-subtitle">Total units currently in active project</span>
+            </div>
+            <div class="stat-icon"><i data-lucide="package-check"></i></div>
+          </div>
+
+          <div class="stat-card stat-card-purchase">
+            <div class="stat-details">
+              <span class="stat-title">Purchase Summary</span>
+              <span class="stat-value" id="rep-purchase-count">0</span>
+              <span class="stat-subtitle">Purchase transactions logged</span>
+            </div>
+            <div class="stat-icon"><i data-lucide="trending-up"></i></div>
+          </div>
+
+          <div class="stat-card stat-card-transfer">
+            <div class="stat-details">
+              <span class="stat-title">Transfer Summary</span>
+              <span class="stat-value" id="rep-transfer-count">0</span>
+              <span class="stat-subtitle">Transfers involving this project</span>
+            </div>
+            <div class="stat-icon"><i data-lucide="arrow-right-left"></i></div>
+          </div>
+
+          <div class="stat-card stat-card-alert">
+            <div class="stat-details">
+              <span class="stat-title">Low Stock Items</span>
+              <span class="stat-value" id="rep-low-count" style="color: var(--danger-color);">0</span>
+              <span class="stat-subtitle">Replenishment items on this site</span>
+            </div>
+            <div class="stat-icon"><i data-lucide="alert-triangle"></i></div>
+          </div>
+
+          <div class="stat-card stat-card-today">
+            <div class="stat-details">
+              <span class="stat-title">Monthly Transactions</span>
+              <span class="stat-value" id="rep-monthly-txns">0</span>
+              <span class="stat-subtitle">Transactions logged this month</span>
+            </div>
+            <div class="stat-icon"><i data-lucide="calendar"></i></div>
+          </div>
+        </div>
+
+        <!-- SVG Charts -->
+        <div class="charts-grid">
+          <!-- Category distribution SVG donut chart -->
+          <div class="content-card">
+            <div class="card-header">
+              <h2><i data-lucide="pie-chart" size="18"></i> Category Distribution</h2>
+            </div>
+            <div class="chart-container">
+              <svg class="donut-chart-svg" viewBox="0 0 100 100" id="donut-svg">
+                <circle class="donut-hole" cx="50" cy="50" r="30"></circle>
+              </svg>
+              <div class="chart-legend" id="donut-legend">
+                <!-- Legend items injected via JS -->
+              </div>
+            </div>
+          </div>
+
+          <!-- Transaction Type SVG Bar Chart -->
+          <div class="content-card">
+            <div class="card-header">
+              <h2><i data-lucide="bar-chart-3" size="18"></i> Transactions by Type</h2>
+            </div>
+            <div class="chart-container">
+              <svg class="bar-chart-svg" id="bar-svg" viewBox="0 0 400 220">
+                <!-- Javascript will inject dynamic SVG bars and labels -->
+              </svg>
+            </div>
+          </div>
+        </div>
+
+        <!-- Low Stock Items visual tracker -->
+        <div class="content-card">
+          <div class="card-header">
+            <h2><i data-lucide="alert-triangle" size="18"></i> Critical Stock Replenishment Tracker</h2>
+          </div>
+          <div class="table-container" style="padding: 10px 24px 20px;">
+            <div id="reports-replenish-list">
+              <!-- Rendered via JS -->
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==========================================
+           SECTION 6: USER MANAGEMENT
+           ========================================== -->
+      <section id="users" class="section-container">
+        <div class="page-title-row">
+          <div>
+            <h1>User Accounts</h1>
+            <p class="page-subtitle">Manage system access roles (Administrator, Store Keeper, Site Engineer, Project Manager)</p>
+          </div>
+          <button class="btn btn-primary" onclick="openAddUserModal()">
+            <i data-lucide="user-plus"></i> Add User
+          </button>
+        </div>
+
+        <div class="content-card">
+          <div class="card-header">
+            <h2><i data-lucide="users" size="18"></i> System Users</h2>
+          </div>
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Role</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="users-tbody">
+                <!-- Dynamically populated -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- ==========================================
+           SECTION 7: SETTINGS
+           ========================================== -->
+      <section id="settings" class="section-container">
+        <div class="page-title-row">
+          <div>
+            <h1>System Settings</h1>
+            <p class="page-subtitle">Configure application settings and configure active construction projects</p>
+          </div>
+        </div>
+
+        <!-- Project Config Table -->
+        <div class="content-card">
+          <div class="card-header">
+            <h2><i data-lucide="building-2" size="18"></i> Project Management</h2>
+            <button class="btn btn-primary btn-sm" onclick="openAddProjectModal()">
+              <i data-lucide="plus" size="14"></i> Add Project
+            </button>
+          </div>
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>Project Name</th>
+                  <th>Status</th>
+                  <th style="width: 150px;">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="projects-settings-tbody">
+                <!-- Rendered via JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="content-card">
+          <div class="card-header">
+            <h2><i data-lucide="sliders" size="18"></i> Corporate Metadata</h2>
+          </div>
+          <form id="settings-form" onsubmit="handleSettingsSave(event)">
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="settings-company">Company Name</label>
+                <input type="text" id="settings-company" required>
+              </div>
+
+              <div class="form-group">
+                <label for="settings-email">Admin Contact Email</label>
+                <input type="email" id="settings-email" required>
+              </div>
+
+              <div class="form-group">
+                <label for="settings-phone">Contact Number</label>
+                <input type="text" id="settings-phone" required>
+              </div>
+
+              <div class="form-group form-group-full">
+                <label for="settings-address">Office / Yard Address</label>
+                <textarea id="settings-address" required></textarea>
+              </div>
+            </div>
+
+            <div class="form-actions">
+              <button type="submit" class="btn btn-primary"><i data-lucide="save"></i> Save Changes</button>
+            </div>
+          </form>
+        </div>
+      </section>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+      <span id="footer-company">© 2026 SK Construction</span>
+      <span id="footer-system">Stock Management System — Version 1.0</span>
+    </footer>
+  </div>
+
+  <!-- ==========================================
+       MODALS
+       ========================================== -->
+  
+  <!-- Modal 1: Register New / Edit Material Item -->
+  <div class="modal-overlay" id="material-modal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 id="material-modal-title"><i data-lucide="box"></i> Add New Material</h3>
+        <button class="modal-close" onclick="closeMaterialModal()"><i data-lucide="x"></i></button>
+      </div>
+      <form id="material-form" onsubmit="handleMaterialSubmit(event)">
+        <input type="hidden" id="edit-material-index" value="">
+        <div class="form-grid" style="grid-template-columns: 1fr; padding: 20px;">
+          <div class="form-group">
+            <label for="mat-name">Item Name *</label>
+            <input type="text" id="mat-name" placeholder="e.g. Cuplock Vertical" required>
+          </div>
+          <div class="form-group">
+            <label for="mat-category">Category *</label>
+            <select id="mat-category" required>
+              <option value="">Select Category</option>
+              <option value="Fixed Asset">Fixed Asset</option>
+              <option value="Machinery">Machinery</option>
+              <option value="Electrical">Electrical</option>
+              <option value="Permanent">Permanent</option>
+              <option value="Cylinder">Cylinder</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="mat-unit">Unit *</label>
+            <select id="mat-unit" required>
+              <option value="">Select Unit</option>
+              <option value="Pcs">Pcs (Pieces)</option>
+              <option value="Tons">Tons</option>
+              <option value="Sets">Sets</option>
+              <option value="Nos">Nos (Numbers)</option>
+              <option value="Cylinders">Cylinders</option>
+              <option value="Meters">Meters</option>
+            </select>
+          </div>
+          <!-- Quantity field (Only visible on creating a completely new material) -->
+          <div class="form-group" id="mat-qty-group">
+            <label for="mat-qty" id="lbl-mat-qty">Initial Stock (Current Project) *</label>
+            <input type="number" id="mat-qty" min="0" value="0" required>
+          </div>
+          <div class="form-group">
+            <label for="mat-threshold">Min Threshold Qty (Safety limit) *</label>
+            <input type="number" id="mat-threshold" min="0" value="10" required>
+          </div>
+        </div>
+        <div class="form-actions">
+          <button type="button" class="btn btn-secondary" onclick="closeMaterialModal()">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="material-modal-save-btn">Save Material</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal 2: Add / Edit User Modal -->
+  <div class="modal-overlay" id="user-modal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 id="user-modal-title"><i data-lucide="user"></i> Add System User</h3>
+        <button class="modal-close" onclick="closeUserModal()"><i data-lucide="x"></i></button>
+      </div>
+      <form id="user-form" onsubmit="handleUserSubmit(event)">
+        <input type="hidden" id="edit-user-index" value="">
+        <div class="form-grid" style="grid-template-columns: 1fr; padding: 20px;">
+          <div class="form-group">
+            <label for="user-name-input">Full Name *</label>
+            <input type="text" id="user-name-input" placeholder="e.g. Ramesh Babu" required>
+          </div>
+          <div class="form-group">
+            <label for="user-role-input">Access Role *</label>
+            <select id="user-role-input" required>
+              <option value="">Select Role</option>
+              <option value="Administrator">Administrator</option>
+              <option value="Store Keeper">Store Keeper</option>
+              <option value="Site Engineer">Site Engineer</option>
+              <option value="Project Manager">Project Manager</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="user-status-input">Status</label>
+            <select id="user-status-input">
+              <option value="Active">Active</option>
+              <option value="Inactive">Inactive</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-actions">
+          <button type="button" class="btn btn-secondary" onclick="closeUserModal()">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="user-modal-save-btn">Save User</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal 3: Add / Edit Project Modal -->
+  <div class="modal-overlay" id="project-modal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3 id="project-modal-title"><i data-lucide="building-2"></i> Add Construction Project</h3>
+        <button class="modal-close" onclick="closeProjectModal()"><i data-lucide="x"></i></button>
+      </div>
+      <form id="project-form" onsubmit="handleProjectSubmit(event)">
+        <input type="hidden" id="edit-project-index" value="">
+        <div class="form-grid" style="grid-template-columns: 1fr; padding: 20px;">
+          <div class="form-group">
+            <label for="project-name-input">Project Site Name *</label>
+            <input type="text" id="project-name-input" placeholder="e.g. High-Rise Site B" required>
+          </div>
+          <div class="form-group">
+            <label for="project-status-input">Status</label>
+            <select id="project-status-input">
+              <option value="Active">Active</option>
+              <option value="Inactive">Inactive</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-actions">
+          <button type="button" class="btn btn-secondary" onclick="closeProjectModal()">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="project-modal-save-btn">Save Project</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Toast Notifications Container -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <!-- ==========================================
+       10. JAVASCRIPT STATE & LOGIC
+       ========================================== */ -->
+  <script>
+    // ==========================================
+    // INITIAL SYSTEM DATA STORE
+    // ==========================================
+    const DEFAULT_PROJECTS = [
+      "Metro Line Phase 4 - Store Yard",
+      "High-Rise Residential Site B",
+      "Highway Bypass Segment C"
+    ];
+
+    const DEFAULT_INVENTORY = [
+      { name: "U Jack", category: "Permanent", unit: "Pcs", threshold: 30, quantities: { "Metro Line Phase 4 - Store Yard": 120, "High-Rise Residential Site B": 80, "Highway Bypass Segment C": 0 } },
+      { name: "Wall Form", category: "Permanent", unit: "Pcs", threshold: 20, quantities: { "Metro Line Phase 4 - Store Yard": 60, "High-Rise Residential Site B": 40, "Highway Bypass Segment C": 10 } },
+      { name: "Cuplock Vertical", category: "Permanent", unit: "Pcs", threshold: 40, quantities: { "Metro Line Phase 4 - Store Yard": 200, "High-Rise Residential Site B": 120, "Highway Bypass Segment C": 0 } },
+      { name: "Cuplock Horizontal", category: "Permanent", unit: "Pcs", threshold: 30, quantities: { "Metro Line Phase 4 - Store Yard": 150, "High-Rise Residential Site B": 90, "Highway Bypass Segment C": 0 } },
+      { name: "ISMC Channel", category: "Fixed Asset", unit: "Tons", threshold: 10, quantities: { "Metro Line Phase 4 - Store Yard": 8, "High-Rise Residential Site B": 12, "Highway Bypass Segment C": 2 } },
+      { name: "ISMB Beam", category: "Fixed Asset", unit: "Tons", threshold: 3, quantities: { "Metro Line Phase 4 - Store Yard": 5, "High-Rise Residential Site B": 2, "Highway Bypass Segment C": 0 } },
+      { name: "Base Jack", category: "Permanent", unit: "Pcs", threshold: 15, quantities: { "Metro Line Phase 4 - Store Yard": 0, "High-Rise Residential Site B": 25, "Highway Bypass Segment C": 5 } },
+      { name: "LED Light", category: "Electrical", unit: "Pcs", threshold: 10, quantities: { "Metro Line Phase 4 - Store Yard": 45, "High-Rise Residential Site B": 10, "Highway Bypass Segment C": 15 } },
+      { name: "Welding Machine", category: "Machinery", unit: "Sets", threshold: 5, quantities: { "Metro Line Phase 4 - Store Yard": 12, "High-Rise Residential Site B": 4, "Highway Bypass Segment C": 3 } },
+      { name: "Petrol Vibrator", category: "Machinery", unit: "Nos", threshold: 3, quantities: { "Metro Line Phase 4 - Store Yard": 2, "High-Rise Residential Site B": 5, "Highway Bypass Segment C": 1 } },
+      { name: "Bar Cutting Machine", category: "Machinery", unit: "Nos", threshold: 2, quantities: { "Metro Line Phase 4 - Store Yard": 4, "High-Rise Residential Site B": 1, "Highway Bypass Segment C": 1 } },
+      { name: "Oxygen Cylinder", category: "Cylinder", unit: "Cylinders", threshold: 5, quantities: { "Metro Line Phase 4 - Store Yard": 15, "High-Rise Residential Site B": 8, "Highway Bypass Segment C": 4 } }
+    ];
+
+    const DEFAULT_TRANSACTIONS = [
+      {
+        date: "2026-06-27",
+        item: "U Jack",
+        type: "Received From Other Site",
+        quantity: 120,
+        vehicle: "KA-01-A-1234 (Drv: Ram Singh)",
+        source: "High-Rise Residential Site B",
+        destination: "Metro Line Phase 4 - Store Yard",
+        user: "Store Keeper",
+        remarks: "Received transfer batch."
+      },
+      {
+        date: "2026-06-27",
+        item: "Wall Form",
+        type: "Transfer To Other Site",
+        quantity: 60,
+        vehicle: "KA-01-B-5678 (Drv: Hari Das)",
+        source: "Metro Line Phase 4 - Store Yard",
+        destination: "High-Rise Residential Site B",
+        user: "Site Engineer",
+        remarks: "Transferred for Column casting."
+      },
+      {
+        date: "2026-06-27",
+        item: "LED Light",
+        type: "Purchase",
+        quantity: 30,
+        vehicle: "Direct Delivery",
+        source: "Metro Supplier Co.",
+        destination: "Metro Line Phase 4 - Store Yard",
+        user: "Administrator",
+        remarks: "Purchased for tunnel project."
+      },
+      {
+        date: "2026-06-26",
+        item: "Petrol Vibrator",
+        type: "Repair",
+        quantity: 2,
+        vehicle: "N/A",
+        source: "Metro Line Phase 4 - Store Yard",
+        destination: "Repair Workshop",
+        user: "Store Keeper",
+        remarks: "Sent engine starter for repair."
+      },
+      {
+        date: "2026-06-26",
+        item: "Base Jack",
+        type: "Scrap",
+        quantity: 15,
+        vehicle: "Scrap Truck",
+        source: "Metro Line Phase 4 - Store Yard",
+        destination: "Scrap Yard",
+        user: "Project Manager",
+        remarks: "Deemed unfit due to thread wear."
+      }
+    ];
+
+    const DEFAULT_USERS = [
+      { name: "Rajesh Kumar", role: "Administrator", status: "Active", email: "rajesh@skconstruction.com", desc: "Full System & Role Control" },
+      { name: "Anil Sharma", role: "Store Keeper", status: "Active", email: "anil@skconstruction.com", desc: "Yard Inventory Logs Only" },
+      { name: "Vikram Singh", role: "Site Engineer", status: "Active", email: "vikram@skconstruction.com", desc: "Inbound & Outbound Requests" },
+      { name: "Sanjay Mehta", role: "Project Manager", status: "Active", email: "sanjay@skconstruction.com", desc: "Global Site Stock Audits" }
+    ];
+
+    const DEFAULT_SETTINGS = {
+      companyName: "SK Construction Co. Ltd.",
+      address: "102, Industrial Area, Sector 5, Bangalore, Karnataka - 560001",
+      phone: "+91 80 4567 8900",
+      email: "contact@skconstruction.com"
+    };
+
+    // Role-based section permissions
+    const ROLE_PERMISSIONS = {
+      "Administrator": ["dashboard", "stock-entry", "inventory", "transactions", "reports", "users", "settings"],
+      "Project Manager": ["dashboard", "inventory", "transactions", "reports", "settings"],
+      "Store Keeper": ["dashboard", "stock-entry", "inventory", "transactions"],
+      "Site Engineer": ["dashboard", "stock-entry", "inventory", "transactions"]
+    };
+
+    // Database loaders
+    let projects = JSON.parse(localStorage.getItem('sk_projects_list')) || DEFAULT_PROJECTS;
+    let inventory = JSON.parse(localStorage.getItem('sk_inventory_list')) || DEFAULT_INVENTORY;
+    let transactions = JSON.parse(localStorage.getItem('sk_transactions_list')) || DEFAULT_TRANSACTIONS;
+    let users = JSON.parse(localStorage.getItem('sk_users_list')) || DEFAULT_USERS;
+    let settings = JSON.parse(localStorage.getItem('sk_settings_data')) || DEFAULT_SETTINGS;
+    
+    // Active System Variables
+    let activeProject = localStorage.getItem('sk_active_project') || projects[0];
+    let currentUser = JSON.parse(localStorage.getItem('sk_current_user')) || null;
+    let inventorySortAsc = true;
+
+    function saveAll() {
+      localStorage.setItem('sk_projects_list', JSON.stringify(projects));
+      localStorage.setItem('sk_inventory_list', JSON.stringify(inventory));
+      localStorage.setItem('sk_transactions_list', JSON.stringify(transactions));
+      localStorage.setItem('sk_users_list', JSON.stringify(users));
+      localStorage.setItem('sk_settings_data', JSON.stringify(settings));
+      localStorage.setItem('sk_active_project', activeProject);
+      if (currentUser) {
+        localStorage.setItem('sk_current_user', JSON.stringify(currentUser));
+      } else {
+        localStorage.removeItem('sk_current_user');
+      }
+    }
+
+    // ==========================================
+    // INITIALIZATION & LOGIN ROUTING
+    // ==========================================
+    document.addEventListener("DOMContentLoaded", () => {
+      // Setup Lucide icons
+      lucide.createIcons();
+
+      // Initialize Splash Screen loader
+      initSplashScreen();
+
+      // Check Login state
+      if (!currentUser) {
+        renderLoginProfiles();
+        document.getElementById("login-screen").classList.remove("hidden");
+      } else {
+        document.getElementById("login-screen").classList.add("hidden");
+        initAppDashboard();
+      }
+
+      // Dropdown handlers (click away to close)
+      window.addEventListener("click", (e) => {
+        const projBtn = document.getElementById("project-selector-badge");
+        const projDropdown = document.getElementById("project-dropdown");
+        if (projBtn && !projBtn.contains(e.target) && projDropdown) {
+          projDropdown.classList.remove("open");
+        }
+
+        const profileBtn = document.getElementById("user-profile-toggle");
+        const profileDropdown = document.getElementById("profile-dropdown");
+        if (profileBtn && !profileBtn.contains(e.target) && profileDropdown) {
+          profileDropdown.classList.remove("open");
+        }
+      });
+
+      // Mobile Hamburger toggle
+      const menuBtn = document.getElementById("menu-toggle");
+      const sidebar = document.getElementById("sidebar");
+      const overlay = document.getElementById("sidebar-overlay");
+
+      menuBtn.addEventListener("click", () => {
+        sidebar.classList.toggle("sidebar-open");
+        overlay.classList.toggle("active");
+      });
+
+      overlay.addEventListener("click", () => {
+        sidebar.classList.remove("sidebar-open");
+        overlay.classList.remove("active");
+      });
+
+      // Header Quick Search binding
+      const globalSearch = document.getElementById("global-search");
+      globalSearch.addEventListener("input", (e) => {
+        const text = e.target.value.toLowerCase();
+        switchTab('inventory');
+        document.getElementById("inv-search").value = text;
+        filterInventory();
+      });
+    });
+
+    // Renders the simulated login screen profile cards
+    function renderLoginProfiles() {
+      const container = document.getElementById("login-profiles-container");
+      container.innerHTML = "";
+
+      users.forEach(u => {
+        const initials = u.name.split(" ").map(n => n[0]).join("").toUpperCase().substring(0,2);
+        
+        let color = "var(--secondary-color)";
+        if (u.role === "Administrator") color = "var(--danger-color)";
+        if (u.role === "Project Manager") color = "var(--success-color)";
+        if (u.role === "Site Engineer") color = "var(--warning-color)";
+
+        const card = document.createElement("div");
+        card.className = "profile-select-card";
+        card.setAttribute("onclick", `handleLogin('${u.name}')`);
+        card.innerHTML = `
+          <div class="profile-select-avatar" style="background-color: ${color};">${initials}</div>
+          <div class="profile-select-name">${u.name}</div>
+          <div class="profile-select-role">${u.role}</div>
+          <div class="profile-select-permission">${u.desc || ''}</div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    // Handles user simulation logging in
+    function handleLogin(userName) {
+      const user = users.find(u => u.name === userName);
+      if (!user) return;
+
+      document.getElementById("login-profiles-container").style.display = "none";
+      const loader = document.getElementById("login-loader");
+      loader.style.display = "flex";
+
+      // Simulate network verification
+      setTimeout(() => {
+        currentUser = user;
+        saveAll();
+        document.getElementById("login-screen").classList.add("hidden");
+        
+        // Reset loader
+        document.getElementById("login-profiles-container").style.display = "grid";
+        loader.style.display = "none";
+
+        // Initial setup
+        initAppDashboard();
+        showToast(`Authorized session as ${currentUser.name} (${currentUser.role}).`);
+      }, 1000);
+    }
+
+    function handleLogout() {
+      currentUser = null;
+      saveAll();
+      document.getElementById("profile-dropdown").classList.remove("open");
+      document.getElementById("login-screen").classList.remove("hidden");
+      renderLoginProfiles();
+      showToast("Session terminated. Logged out.", "warning");
+    }
+
+    // Setup active dashboard state based on permissions
+    function initAppDashboard() {
+      // 1. Sync global values
+      updateSettingsDisplay();
+
+      // 2. Render sidebar options based on role permissions
+      renderSidebarNavigation();
+
+      // 3. Set project switcher dropdown list
+      renderProjectSwitcherList();
+
+      // 4. Default view settings
+      resetStockEntryForm();
+      switchTab("dashboard");
+
+      // 5. Initial page renders
+      renderDashboard();
+      renderInventoryTable();
+      renderTransactionsTable();
+      renderReports();
+      renderUsersTable();
+      renderProjectsSettingsTable();
+    }
+
+    function renderSidebarNavigation() {
+      const navContainer = document.getElementById("sidebar-nav-container");
+      navContainer.innerHTML = "";
+
+      const allowedSections = ROLE_PERMISSIONS[currentUser.role] || ["dashboard"];
+
+      // Setup standard navigation
+      const navDefinitions = [
+        { id: "dashboard", icon: "layout-dashboard", label: "Dashboard" },
+        { id: "stock-entry", icon: "plus-circle", label: "Stock Entry" },
+        { id: "inventory", icon: "boxes", label: "Inventory" },
+        { id: "transactions", icon: "history", label: "Transactions" },
+        { id: "reports", icon: "bar-chart-3", label: "Reports" },
+        { id: "users", icon: "users", label: "Users" },
+        { id: "settings", icon: "settings", label: "Settings" }
+      ];
+
+      navDefinitions.forEach(def => {
+        if (allowedSections.includes(def.id)) {
+          const div = document.createElement("div");
+          div.className = `nav-item ${def.id === 'dashboard' ? 'active' : ''}`;
+          div.setAttribute("data-target", def.id);
+          div.innerHTML = `
+            <i data-lucide="${def.icon}"></i>
+            <span>${def.label}</span>
+          `;
+          div.addEventListener("click", () => {
+            switchTab(def.id);
+          });
+          navContainer.appendChild(div);
+        }
+      });
+      lucide.createIcons();
+    }
+
+    function switchTab(targetId, filterParam = null) {
+      const allowedSections = ROLE_PERMISSIONS[currentUser.role] || ["dashboard"];
+      
+      // Safety block
+      if (!allowedSections.includes(targetId)) {
+        targetId = "dashboard";
+      }
+
+      // Hide all sections
+      const sections = document.querySelectorAll(".section-container");
+      sections.forEach(sec => sec.classList.remove("active"));
+
+      // Set active section
+      const targetSec = document.getElementById(targetId);
+      if (targetSec) {
+        targetSec.classList.add("active");
+      }
+
+      // Sync active classes in sidebar
+      const navItems = document.querySelectorAll(".nav-item");
+      navItems.forEach(item => {
+        if (item.getAttribute("data-target") === targetId) {
+          item.classList.add("active");
+        } else {
+          item.classList.remove("active");
+        }
+      });
+
+      // Special filters
+      if (targetId === 'inventory' && filterParam === 'low-stock') {
+        document.getElementById("inv-filter-status").value = 'Low Stock';
+        filterInventory();
+      }
+
+      // Close overlays
+      document.getElementById("sidebar").classList.remove("sidebar-open");
+      document.getElementById("sidebar-overlay").classList.remove("active");
+
+      // Reload state renders
+      if (targetId === 'dashboard') {
+        renderDashboard();
+      } else if (targetId === 'reports') {
+        renderReports();
+      }
+
+      window.scrollTo(0, 0);
+    }
+
+    // ==========================================
+    // TOAST SYSTEM
+    // ==========================================
+    function showToast(message, type = "success") {
+      const container = document.getElementById("toast-container");
+      const toast = document.createElement("div");
+      toast.className = `toast toast-${type}`;
+      
+      let icon = "check-circle";
+      if (type === "warning") icon = "alert-triangle";
+      if (type === "danger") icon = "alert-circle";
+
+      toast.innerHTML = `
+        <i data-lucide="${icon}" class="toast-icon"></i>
+        <div class="toast-content">${message}</div>
+      `;
+      container.appendChild(toast);
+      lucide.createIcons();
+
+      setTimeout(() => toast.classList.add("show"), 10);
+
+      setTimeout(() => {
+        toast.classList.remove("show");
+        setTimeout(() => toast.remove(), 300);
+      }, 3500);
+    }
+
+    // ==========================================
+    // SWITCH ACTIVE PROJECT
+    // ==========================================
+    function toggleProjectDropdown(event) {
+      event.stopPropagation();
+      document.getElementById("project-dropdown").classList.toggle("open");
+    }
+
+    function toggleProfileDropdown(event) {
+      event.stopPropagation();
+      document.getElementById("profile-dropdown").classList.toggle("open");
+    }
+
+    function renderProjectSwitcherList() {
+      const list = document.getElementById("project-dropdown-list");
+      list.innerHTML = "";
+
+      projects.forEach(p => {
+        const item = document.createElement("div");
+        item.className = `project-dropdown-item ${p === activeProject ? 'active' : ''}`;
+        item.innerHTML = `
+          <span>${p}</span>
+          ${p === activeProject ? '<i data-lucide="check" size="14"></i>' : ''}
+        `;
+        item.onclick = () => handleProjectSwitch(p);
+        list.appendChild(item);
+      });
+      lucide.createIcons();
+    }
+
+    function handleProjectSwitch(projName) {
+      activeProject = projName;
+      saveAll();
+      document.getElementById("project-dropdown").classList.remove("open");
+      
+      // Update displays
+      updateSettingsDisplay();
+
+      // Refresh screens
+      renderDashboard();
+      renderInventoryTable();
+      renderTransactionsTable();
+      renderReports();
+      resetStockEntryForm();
+
+      showToast(`Active context switched to: ${activeProject}`);
+    }
+
+    // ==========================================
+    // CRITICAL: DYNAMIC STOCK SEGREGATION LOGIC
+    // ==========================================
+    function getItemQuantityForProject(item, projectName) {
+      if (!item.quantities) {
+        item.quantities = {};
+      }
+      // Initialize project stock at 0 if not present
+      if (item.quantities[projectName] === undefined) {
+        item.quantities[projectName] = 0;
+      }
+      return item.quantities[projectName];
+    }
+
+    function getStockStatusForProject(item, projectName) {
+      const qty = getItemQuantityForProject(item, projectName);
+      if (qty <= 0) return { label: "Out of Stock", class: "badge-danger" };
+      if (qty <= item.threshold) return { label: "Low Stock", class: "badge-warning" };
+      return { label: "Available", class: "badge-success" };
+    }
+
+    // ==========================================
+    // CRUD: MATERIAL INVENTORY ITEMS
+    // ==========================================
+    function renderInventoryTable() {
+      const tbody = document.getElementById("inventory-tbody");
+      tbody.innerHTML = "";
+
+      const query = document.getElementById("inv-search").value.toLowerCase();
+      const catFilter = document.getElementById("inv-filter-category").value;
+      const statusFilter = document.getElementById("inv-filter-status").value;
+
+      let filtered = inventory.filter(item => {
+        const matchQuery = item.name.toLowerCase().includes(query);
+        const matchCat = catFilter === "All" || item.category === catFilter;
+        
+        const statusDetails = getStockStatusForProject(item, activeProject);
+        const matchStatus = statusFilter === "All" || statusDetails.label === statusFilter;
+        
+        return matchQuery && matchCat && matchStatus;
+      });
+
+      // Sort alphabetical or count
+      filtered.sort((a, b) => {
+        return inventorySortAsc ? a.name.localeCompare(b.name) : b.name.localeCompare(a.name);
+      });
+
+      if (filtered.length === 0) {
+        document.getElementById("inv-empty-state").style.display = "block";
+      } else {
+        document.getElementById("inv-empty-state").style.display = "none";
+      }
+
+      const isReadOnly = ["Site Engineer", "Store Keeper", "Project Manager"].includes(currentUser.role);
+      // Admin gets full delete, Store Keeper gets edit threshold, others read-only.
+      const canEditThreshold = ["Administrator", "Store Keeper"].includes(currentUser.role);
+      const canDelete = currentUser.role === "Administrator";
+
+      filtered.forEach(item => {
+        const globalIndex = inventory.findIndex(i => i.name === item.name);
+        const status = getStockStatusForProject(item, activeProject);
+        const qty = getItemQuantityForProject(item, activeProject);
+        
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td class="td-bold">${item.name}</td>
+          <td><span class="badge badge-neutral">${item.category}</span></td>
+          <td>${item.unit}</td>
+          <td style="font-weight: 600;">${qty}</td>
+          <td><span class="badge ${status.class}">${status.label}</span></td>
+          <td>${item.threshold} <span style="font-size:0.75rem; color:var(--text-light);">${item.unit}</span></td>
+          <td>
+            <div class="action-cell">
+              ${canEditThreshold ? `
+                <button class="icon-btn icon-btn-edit" onclick="openEditItemModal(${globalIndex})" title="Edit details">
+                  <i data-lucide="edit-2" size="14"></i>
+                </button>
+              ` : `<span style="font-size:0.75rem; color:var(--text-light);">Read-only</span>`}
+              
+              ${canDelete ? `
+                <button class="icon-btn icon-btn-delete" onclick="handleDeleteItem(${globalIndex})" title="Delete material">
+                  <i data-lucide="trash-2" size="14"></i>
+                </button>
+              ` : ''}
+            </div>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+
+      lucide.createIcons();
+    }
+
+    function filterInventory() {
+      renderInventoryTable();
+    }
+
+    function toggleInventorySort() {
+      inventorySortAsc = !inventorySortAsc;
+      const btn = document.getElementById("inv-sort-btn");
+      if (inventorySortAsc) {
+        btn.innerHTML = `Sort Item A-Z <i data-lucide="sort-asc" size="14"></i>`;
+      } else {
+        btn.innerHTML = `Sort Item Z-A <i data-lucide="sort-desc" size="14"></i>`;
+      }
+      lucide.createIcons();
+      renderInventoryTable();
+    }
+
+    function openAddItemModal() {
+      document.getElementById("material-modal-title").innerHTML = `<i data-lucide="box"></i> Add New Material`;
+      document.getElementById("material-modal-save-btn").innerHTML = `Save Material`;
+      document.getElementById("edit-material-index").value = "";
+      document.getElementById("material-form").reset();
+      
+      document.getElementById("lbl-mat-qty").textContent = `Initial Stock (${activeProject.split(' ')[0]} Site) *`;
+      document.getElementById("mat-qty-group").style.display = "flex";
+      document.getElementById("mat-qty").required = true;
+
+      document.getElementById("material-modal").classList.add("open");
+      lucide.createIcons();
+    }
+
+    function openEditItemModal(index) {
+      const item = inventory[index];
+      document.getElementById("material-modal-title").innerHTML = `<i data-lucide="edit"></i> Edit Material Properties`;
+      document.getElementById("material-modal-save-btn").innerHTML = `Update Properties`;
+      document.getElementById("edit-material-index").value = index;
+
+      document.getElementById("mat-name").value = item.name;
+      document.getElementById("mat-category").value = item.category;
+      document.getElementById("mat-unit").value = item.unit;
+      document.getElementById("mat-threshold").value = item.threshold;
+
+      document.getElementById("mat-qty-group").style.display = "none";
+      document.getElementById("mat-qty").required = false;
+
+      document.getElementById("material-modal").classList.add("open");
+      lucide.createIcons();
+    }
+
+    function closeMaterialModal() {
+      document.getElementById("material-modal").classList.remove("open");
+    }
+
+    function handleMaterialSubmit(e) {
+      e.preventDefault();
+      const indexStr = document.getElementById("edit-material-index").value;
+      const name = document.getElementById("mat-name").value.trim();
+      const category = document.getElementById("mat-category").value;
+      const unit = document.getElementById("mat-unit").value;
+      const threshold = parseFloat(document.getElementById("mat-threshold").value);
+
+      const duplicateIdx = inventory.findIndex(item => item.name.toLowerCase() === name.toLowerCase());
+
+      if (indexStr === "") {
+        // Add new material
+        if (duplicateIdx !== -1) {
+          showToast(`A material named "${name}" already exists!`, "danger");
+          return;
+        }
+
+        const qty = parseFloat(document.getElementById("mat-qty").value) || 0;
+        
+        // Initialize quantities map for all projects
+        const quantities = {};
+        projects.forEach(p => {
+          quantities[p] = (p === activeProject) ? qty : 0;
+        });
+
+        inventory.push({ name, category, unit, threshold, quantities });
+        showToast(`Material "${name}" registered in yard registry.`);
+
+        if (qty > 0) {
+          transactions.unshift({
+            date: new Date().toISOString().split('T')[0],
+            item: name,
+            type: "Manual Adjustment",
+            quantity: qty,
+            vehicle: "N/A",
+            source: "System Init",
+            destination: activeProject,
+            user: currentUser.name,
+            remarks: "Initial setup quantity."
+          });
+        }
+      } else {
+        // Edit existing details
+        const editIdx = parseInt(indexStr);
+        if (duplicateIdx !== -1 && duplicateIdx !== editIdx) {
+          showToast(`Another material with name "${name}" already exists!`, "danger");
+          return;
+        }
+
+        const oldName = inventory[editIdx].name;
+        if (oldName !== name) {
+          transactions.forEach(t => {
+            if (t.item === oldName) t.item = name;
+          });
+        }
+
+        inventory[editIdx].name = name;
+        inventory[editIdx].category = category;
+        inventory[editIdx].unit = unit;
+        inventory[editIdx].threshold = threshold;
+
+        showToast(`Properties for "${name}" updated.`);
+      }
+
+      saveAll();
+      closeMaterialModal();
+      populateStockEntryItemSelect();
+      renderInventoryTable();
+      renderDashboard();
+    }
+
+    function handleDeleteItem(index) {
+      const item = inventory[index];
+      if (confirm(`Are you sure you want to completely delete "${item.name}" from inventory? This erases stock logs across ALL active projects.`)) {
+        inventory.splice(index, 1);
+        saveAll();
+        populateStockEntryItemSelect();
+        renderInventoryTable();
+        renderDashboard();
+        showToast(`Material deleted globally.`, "warning");
+      }
+    }
+
+    // ==========================================
+    // STOCK ENTRY & FORM CONTROLLER
+    // ==========================================
+    function populateStockEntryItemSelect() {
+      const select = document.getElementById("entry-item");
+      select.innerHTML = '<option value="">Select Item Name</option>';
+
+      const sorted = [...inventory].sort((a,b) => a.name.localeCompare(b.name));
+      sorted.forEach(item => {
+        const option = document.createElement("option");
+        option.value = item.name;
+        option.textContent = item.name;
+        select.appendChild(option);
+      });
+    }
+
+    function handleEntryItemChange() {
+      const select = document.getElementById("entry-item");
+      const categorySelect = document.getElementById("entry-category");
+      const unitSelect = document.getElementById("entry-unit");
+
+      if (!select.value) {
+        categorySelect.value = "";
+        unitSelect.value = "";
+        return;
+      }
+
+      const item = inventory.find(i => i.name === select.value);
+      if (item) {
+        categorySelect.value = item.category;
+        unitSelect.value = item.unit;
+      }
+    }
+
+    // Dynamic field labels based on Transaction type to help the user
+    function handleTransactionTypeChange() {
+      const type = document.getElementById("entry-type").value;
+      const sourceGroup = document.getElementById("group-entry-source");
+      const destGroup = document.getElementById("group-entry-destination");
+      
+      const sourceInput = document.getElementById("entry-source");
+      const destInput = document.getElementById("entry-destination");
+
+      const lblSource = document.getElementById("lbl-entry-source");
+      const lblDest = document.getElementById("lbl-entry-destination");
+
+      // Reset styles and read-only properties
+      sourceInput.readOnly = false;
+      destInput.readOnly = false;
+      sourceInput.placeholder = "e.g. Supplier name / Workshop";
+      destInput.placeholder = "e.g. Yard / Project Site";
+
+      if (type === "Purchase") {
+        sourceGroup.style.display = "flex";
+        destGroup.style.display = "flex";
+        lblSource.textContent = "Supplier Name *";
+        lblDest.textContent = "Destination Site *";
+        destInput.value = activeProject;
+        destInput.readOnly = true;
+      } else if (type === "Received From Other Site") {
+        sourceGroup.style.display = "flex";
+        destGroup.style.display = "flex";
+        lblSource.textContent = "Source Construction Site *";
+        lblDest.textContent = "Destination Site *";
+        destInput.value = activeProject;
+        destInput.readOnly = true;
+        
+        // Suggest other project as default source placeholder
+        const otherProj = projects.find(p => p !== activeProject) || "Other Project Site";
+        sourceInput.placeholder = `e.g. ${otherProj}`;
+      } else if (type === "Transfer To Other Site") {
+        sourceGroup.style.display = "flex";
+        destGroup.style.display = "flex";
+        lblSource.textContent = "Source Site *";
+        lblDest.textContent = "Destination Construction Site *";
+        sourceInput.value = activeProject;
+        sourceInput.readOnly = true;
+        
+        const otherProj = projects.find(p => p !== activeProject) || "Other Project Site";
+        destInput.placeholder = `e.g. ${otherProj}`;
+      } else if (type === "Repair") {
+        sourceGroup.style.display = "flex";
+        destGroup.style.display = "flex";
+        lblSource.textContent = "Source Site *";
+        lblDest.textContent = "Repair Workshop Details *";
+        sourceInput.value = activeProject;
+        sourceInput.readOnly = true;
+        destInput.placeholder = "e.g. Bangalore Central Workshop";
+      } else if (type === "Scrap") {
+        sourceGroup.style.display = "flex";
+        destGroup.style.display = "flex";
+        lblSource.textContent = "Source Site *";
+        lblDest.textContent = "Scrap Yard Location *";
+        sourceInput.value = activeProject;
+        sourceInput.readOnly = true;
+        destInput.value = "Central Scrap Yard";
+      } else if (type === "Rework") {
+        sourceGroup.style.display = "flex";
+        destGroup.style.display = "flex";
+        lblSource.textContent = "Rework Location / Workshop *";
+        lblDest.textContent = "Destination Site *";
+        destInput.value = activeProject;
+        destInput.readOnly = true;
+        sourceInput.value = "Central Workshop";
+      } else {
+        // Manual Adjust
+        sourceGroup.style.display = "flex";
+        destGroup.style.display = "flex";
+        lblSource.textContent = "Source *";
+        lblDest.textContent = "Destination *";
+        sourceInput.value = "System Manual Adjustment";
+        destInput.value = activeProject;
+      }
+    }
+
+    function resetStockEntryForm() {
+      const form = document.getElementById("stock-entry-form");
+      form.reset();
+      
+      const today = new Date().toISOString().split('T')[0];
+      document.getElementById("entry-date").value = today;
+
+      populateStockEntryItemSelect();
+      handleEntryItemChange();
+      
+      // Default transaction type behavior
+      document.getElementById("entry-type").value = "Purchase";
+      handleTransactionTypeChange();
+    }
+
+    function handleStockEntrySubmit(e) {
+      e.preventDefault();
+      const date = document.getElementById("entry-date").value;
+      const itemName = document.getElementById("entry-item").value;
+      const qty = parseFloat(document.getElementById("entry-quantity").value);
+      const unit = document.getElementById("entry-unit").value;
+      const category = document.getElementById("entry-category").value;
+      const type = document.getElementById("entry-type").value;
+      const source = document.getElementById("entry-source").value.trim();
+      const dest = document.getElementById("entry-destination").value.trim();
+      const vehicle = document.getElementById("entry-vehicle").value.trim() || "N/A";
+      const driver = document.getElementById("entry-driver").value.trim() || "N/A";
+      const remarks = document.getElementById("entry-remarks").value.trim() || "N/A";
+
+      if (!itemName) {
+        showToast("Select a material first.", "warning");
+        return;
+      }
+
+      const itemIdx = inventory.findIndex(i => i.name === itemName);
+      if (itemIdx === -1) {
+        showToast("Material registry error.", "danger");
+        return;
+      }
+
+      const item = inventory[itemIdx];
+      
+      // Update item properties globally if customized in the transaction form
+      if (category) item.category = category;
+      if (unit) item.unit = unit;
+      
+      // 1. DYNAMIC BALANCE CHECKS ON LOGICAL SOURCE / DESTINATION SITES
+      const incomingTypes = ["Purchase", "Received From Other Site", "Rework"];
+      const outgoingTypes = ["Transfer To Other Site", "Repair", "Scrap"];
+
+      if (incomingTypes.includes(type)) {
+        // Adds stock to destination (which is the activeProject)
+        if (!item.quantities[activeProject]) item.quantities[activeProject] = 0;
+        item.quantities[activeProject] += qty;
+        
+        // If received from another site in our project list, deduct from their yard!
+        if (type === "Received From Other Site" && projects.includes(source)) {
+          if (!item.quantities[source]) item.quantities[source] = 0;
+          if (item.quantities[source] < qty) {
+            if (!confirm(`Warning: Source site (${source}) has only ${item.quantities[source]} ${unit} of ${itemName}. Proceeding will force their balance negative. Proceed?`)) {
+              return;
+            }
+          }
+          item.quantities[source] -= qty;
+        }
+
+      } else if (outgoingTypes.includes(type)) {
+        // Subtracts stock from source (which is activeProject)
+        const currentActiveQty = item.quantities[activeProject] || 0;
+        if (currentActiveQty < qty) {
+          if (!confirm(`Warning: Active project yard only has ${currentActiveQty} ${unit} of ${itemName}. Propose forced transfer?`)) {
+            return;
+          }
+        }
+        item.quantities[activeProject] = currentActiveQty - qty;
+
+        // If transferring to another active project in our list, add it to their yard!
+        if (type === "Transfer To Other Site" && projects.includes(dest)) {
+          if (!item.quantities[dest]) item.quantities[dest] = 0;
+          item.quantities[dest] += qty;
+        }
+
+      } else {
+        // Manual adjustment direction selector
+        const adjustDir = confirm(`Confirm Manual Adjustment direction:\n\nOK = ADD ${qty} ${unit} to ${activeProject}\nCancel = SUBTRACT ${qty} ${unit} from ${activeProject}`);
+        const currentActiveQty = item.quantities[activeProject] || 0;
+        if (adjustDir) {
+          item.quantities[activeProject] = currentActiveQty + qty;
+        } else {
+          item.quantities[activeProject] = Math.max(0, currentActiveQty - qty);
+        }
+      }
+
+      // Add to historical ledger
+      transactions.unshift({
+        date,
+        item: itemName,
+        type,
+        quantity: qty,
+        vehicle: vehicle !== "N/A" ? `${vehicle} (Drv: ${driver})` : "N/A",
+        source,
+        destination: dest,
+        user: currentUser.name,
+        remarks
+      });
+
+      saveAll();
+      showToast(`Stock transaction logged successfully.`);
+
+      // Warning prompt if item status goes critical
+      const newStatus = getStockStatusForProject(inventory[itemIdx], activeProject);
+      if (newStatus.label !== "Available") {
+        showToast(`Stock Alert: "${itemName}" is low on this site (${item.quantities[activeProject]} remaining).`, "warning");
+      }
+
+      resetStockEntryForm();
+      renderInventoryTable();
+      renderTransactionsTable();
+      renderDashboard();
+    }
+
+    // ==========================================
+    // TRANSACTION HISTORICAL LEDGER
+    // ==========================================
+    function renderTransactionsTable() {
+      const tbody = document.getElementById("transactions-tbody");
+      tbody.innerHTML = "";
+
+      const query = document.getElementById("txn-search").value.toLowerCase();
+      const typeFilter = document.getElementById("txn-filter-type").value;
+      const scopeFilter = document.getElementById("txn-filter-scope").value;
+      const startDate = document.getElementById("txn-filter-start").value;
+      const endDate = document.getElementById("txn-filter-end").value;
+
+      const filtered = transactions.filter(t => {
+        // Search text match
+        const matchesQuery = t.item.toLowerCase().includes(query) || 
+                             t.vehicle.toLowerCase().includes(query) ||
+                             t.user.toLowerCase().includes(query) ||
+                             t.remarks.toLowerCase().includes(query);
+        
+        // Type filter match
+        const matchesType = typeFilter === "All" || t.type === typeFilter;
+        
+        // Project Scope filter: Show only active project context (source or destination match)
+        const matchesScope = scopeFilter === "All" || t.source === activeProject || t.destination === activeProject;
+
+        // Date range match
+        let matchesDate = true;
+        if (startDate) matchesDate = matchesDate && t.date >= startDate;
+        if (endDate) matchesDate = matchesDate && t.date <= endDate;
+
+        return matchesQuery && matchesType && matchesScope && matchesDate;
+      });
+
+      if (filtered.length === 0) {
+        document.getElementById("txn-empty-state").style.display = "block";
+      } else {
+        document.getElementById("txn-empty-state").style.display = "none";
+      }
+
+      filtered.forEach(t => {
+        const tr = document.createElement("tr");
+        
+        let typeClass = "badge-info";
+        if (["Purchase", "Received From Other Site"].includes(t.type)) typeClass = "badge-success";
+        if (["Transfer To Other Site", "Scrap"].includes(t.type)) typeClass = "badge-danger";
+        if (t.type === "Repair") typeClass = "badge-warning";
+        if (t.type === "Manual Adjustment") typeClass = "badge-neutral";
+
+        const dateObj = new Date(t.date);
+        const formattedDate = isNaN(dateObj) ? t.date : dateObj.toLocaleDateString('en-US', {
+          year: 'numeric', month: 'short', day: 'numeric'
+        });
+
+        tr.innerHTML = `
+          <td style="white-space: nowrap;">${formattedDate}</td>
+          <td class="td-bold">${t.item}</td>
+          <td><span class="badge ${typeClass}">${t.type}</span></td>
+          <td style="font-weight:600;">${t.quantity}</td>
+          <td>${t.vehicle}</td>
+          <td>${t.source}</td>
+          <td>${t.destination}</td>
+          <td>${t.user}</td>
+          <td style="max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${t.remarks}">
+            ${t.remarks}
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function filterTransactions() {
+      renderTransactionsTable();
+    }
+
+    function clearTransactionFilters() {
+      document.getElementById("txn-search").value = "";
+      document.getElementById("txn-filter-type").value = "All";
+      document.getElementById("txn-filter-scope").value = "Active";
+      document.getElementById("txn-filter-start").value = "";
+      document.getElementById("txn-filter-end").value = "";
+      renderTransactionsTable();
+    }
+
+    // ==========================================
+    // CRUD: USER MANAGEMENT
+    // ==========================================
+    function renderUsersTable() {
+      const tbody = document.getElementById("users-tbody");
+      tbody.innerHTML = "";
+
+      users.forEach((u, index) => {
+        const tr = document.createElement("tr");
+        const statusClass = u.status === "Active" ? "badge-success" : "badge-neutral";
+        
+        let roleBadge = "badge-info";
+        if (u.role === "Administrator") roleBadge = "badge-danger";
+        if (u.role === "Project Manager") roleBadge = "badge-success";
+        if (u.role === "Site Engineer") roleBadge = "badge-warning";
+
+        const canManage = currentUser.role === "Administrator";
+
+        tr.innerHTML = `
+          <td class="td-bold">${u.name}</td>
+          <td><span class="badge ${roleBadge}">${u.role}</span></td>
+          <td><span class="badge ${statusClass}">${u.status}</span></td>
+          <td>
+            <div class="action-cell">
+              ${canManage ? `
+                <button class="icon-btn icon-btn-edit" onclick="openEditUserModal(${index})" title="Edit role">
+                  <i data-lucide="edit" size="14"></i>
+                </button>
+                <button class="icon-btn icon-btn-delete" onclick="handleDeleteUser(${index})" title="Delete user">
+                  <i data-lucide="user-minus" size="14"></i>
+                </button>
+              ` : '<span style="font-size:0.75rem; color:var(--text-light);">Admin Only</span>'}
+            </div>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+      lucide.createIcons();
+    }
+
+    function openAddUserModal() {
+      document.getElementById("user-modal-title").innerHTML = `<i data-lucide="user-plus"></i> Add System User`;
+      document.getElementById("user-modal-save-btn").innerHTML = `Save User`;
+      document.getElementById("edit-user-index").value = "";
+      document.getElementById("user-form").reset();
+      
+      document.getElementById("user-modal").classList.add("open");
+      lucide.createIcons();
+    }
+
+    function openEditUserModal(index) {
+      const u = users[index];
+      document.getElementById("user-modal-title").innerHTML = `<i data-lucide="edit"></i> Edit User Access`;
+      document.getElementById("user-modal-save-btn").innerHTML = `Update User`;
+      document.getElementById("edit-user-index").value = index;
+
+      document.getElementById("user-name-input").value = u.name;
+      document.getElementById("user-role-input").value = u.role;
+      document.getElementById("user-status-input").value = u.status;
+
+      document.getElementById("user-modal").classList.add("open");
+      lucide.createIcons();
+    }
+
+    function closeUserModal() {
+      document.getElementById("user-modal").classList.remove("open");
+    }
+
+    function handleUserSubmit(e) {
+      e.preventDefault();
+      const indexStr = document.getElementById("edit-user-index").value;
+      const name = document.getElementById("user-name-input").value.trim();
+      const role = document.getElementById("user-role-input").value;
+      const status = document.getElementById("user-status-input").value;
+
+      if (indexStr === "") {
+        // Create
+        users.push({ 
+          name, 
+          role, 
+          status, 
+          email: `${name.toLowerCase().replace(/\s+/g, '')}@skconstruction.com`,
+          desc: `Simulated yard logs for ${role}`
+        });
+        showToast(`User account created.`);
+      } else {
+        // Edit
+        const idx = parseInt(indexStr);
+        const oldName = users[idx].name;
+        
+        if (oldName === currentUser.name && name !== currentUser.name) {
+          if (!confirm("This will rename your current active profile. Continue?")) return;
+        }
+
+        users[idx].name = name;
+        users[idx].role = role;
+        users[idx].status = status;
+        showToast(`User credentials updated.`);
+      }
+
+      saveAll();
+      closeUserModal();
+      renderUsersTable();
+      updateSettingsDisplay();
+    }
+
+    function handleDeleteUser(index) {
+      const u = users[index];
+      if (u.name === currentUser.name) {
+        showToast("You cannot delete your own logged-in user profile.", "danger");
+        return;
+      }
+      if (confirm(`Confirm account termination for "${u.name}"?`)) {
+        users.splice(index, 1);
+        saveAll();
+        renderUsersTable();
+        showToast(`User deleted.`);
+      }
+    }
+
+    // ==========================================
+    // SYSTEM SETTINGS & COMPANY DATA
+    // ==========================================
+    function updateSettingsDisplay() {
+      // Inputs
+      document.getElementById("settings-company").value = settings.companyName;
+      document.getElementById("settings-address").value = settings.address;
+      document.getElementById("settings-phone").value = settings.phone;
+      document.getElementById("settings-email").value = settings.email;
+
+      // Header switch details
+      document.getElementById("badge-project-name").textContent = activeProject;
+      document.getElementById("footer-company").textContent = `© 2026 ${settings.companyName}`;
+      document.getElementById("sidebar-footer-company").textContent = settings.companyName.split(" ")[0] + " Construction";
+
+      // Profile details
+      if (currentUser) {
+        document.getElementById("profile-name").innerHTML = `${currentUser.name} <i data-lucide="chevron-down" size="12"></i>`;
+        document.getElementById("profile-role").textContent = currentUser.role;
+        document.getElementById("dropdown-full-name").textContent = currentUser.name;
+        document.getElementById("dropdown-email").textContent = currentUser.email || `${currentUser.name.toLowerCase().replace(/\s+/g, '')}@skconstruction.com`;
+
+        const initials = currentUser.name.split(" ").map(n => n[0]).join("").toUpperCase().substring(0, 2);
+        document.getElementById("avatar-initials").textContent = initials;
+      }
+      lucide.createIcons();
+    }
+
+    function handleSettingsSave(e) {
+      e.preventDefault();
+      settings.companyName = document.getElementById("settings-company").value.trim();
+      settings.address = document.getElementById("settings-address").value.trim();
+      settings.phone = document.getElementById("settings-phone").value.trim();
+      settings.email = document.getElementById("settings-email").value.trim();
+
+      saveAll();
+      updateSettingsDisplay();
+      showToast("Corporate parameters updated.");
+    }
+
+    // ==========================================
+    // PROJECT MANAGEMENT (SETTINGS SECTION)
+    // ==========================================
+    function renderProjectsSettingsTable() {
+      const tbody = document.getElementById("projects-settings-tbody");
+      tbody.innerHTML = "";
+
+      const isAdmin = currentUser.role === "Administrator";
+
+      projects.forEach((proj, index) => {
+        const tr = document.createElement("tr");
+        const isActiveContext = proj === activeProject;
+
+        tr.innerHTML = `
+          <td class="td-bold">${proj} ${isActiveContext ? '<span class="badge badge-success" style="padding: 2px 8px; font-size:0.65rem;">Active View</span>' : ''}</td>
+          <td><span class="badge badge-success">Active Site</span></td>
+          <td>
+            <div class="action-cell">
+              ${isAdmin ? `
+                <button class="icon-btn icon-btn-edit" onclick="openEditProjectModal(${index})" title="Edit Project Name">
+                  <i data-lucide="edit" size="14"></i>
+                </button>
+                ${!isActiveContext ? `
+                  <button class="icon-btn icon-btn-delete" onclick="handleDeleteProject(${index})" title="Delete Project Site">
+                    <i data-lucide="trash-2" size="14"></i>
+                  </button>
+                ` : '<span style="font-size:0.7rem; color:var(--text-light);">Cannot delete active</span>'}
+              ` : '<span style="font-size:0.75rem; color:var(--text-light);">Admin Only</span>'}
+            </div>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      });
+      lucide.createIcons();
+    }
+
+    function openAddProjectModal() {
+      document.getElementById("project-modal-title").innerHTML = `<i data-lucide="building-2"></i> Add Construction Project`;
+      document.getElementById("project-modal-save-btn").innerHTML = `Save Project`;
+      document.getElementById("edit-project-index").value = "";
+      document.getElementById("project-form").reset();
+      
+      document.getElementById("project-modal").classList.add("open");
+      lucide.createIcons();
+    }
+
+    function openEditProjectModal(index) {
+      const projName = projects[index];
+      document.getElementById("project-modal-title").innerHTML = `<i data-lucide="edit"></i> Rename Project Site`;
+      document.getElementById("project-modal-save-btn").innerHTML = `Update Name`;
+      document.getElementById("edit-project-index").value = index;
+      document.getElementById("project-name-input").value = projName;
+
+      document.getElementById("project-modal").classList.add("open");
+      lucide.createIcons();
+    }
+
+    function closeProjectModal() {
+      document.getElementById("project-modal").classList.remove("open");
+    }
+
+    function handleProjectSubmit(e) {
+      e.preventDefault();
+      const indexStr = document.getElementById("edit-project-index").value;
+      const newName = document.getElementById("project-name-input").value.trim();
+
+      const duplicateIdx = projects.findIndex(p => p.toLowerCase() === newName.toLowerCase());
+
+      if (indexStr === "") {
+        // Create project
+        if (duplicateIdx !== -1) {
+          showToast("A project with this name already exists.", "danger");
+          return;
+        }
+
+        projects.push(newName);
+        
+        // Initialize quantities map for this new project to 0 for all items
+        inventory.forEach(item => {
+          if (!item.quantities) item.quantities = {};
+          item.quantities[newName] = 0;
+        });
+
+        showToast(`Project site "${newName}" added to company registries.`);
+      } else {
+        // Edit name
+        const idx = parseInt(indexStr);
+        if (duplicateIdx !== -1 && duplicateIdx !== idx) {
+          showToast("Another project site has this name already.", "danger");
+          return;
+        }
+
+        const oldName = projects[idx];
+        
+        // Rename inside quantity mapping of each item
+        inventory.forEach(item => {
+          if (item.quantities && item.quantities[oldName] !== undefined) {
+            item.quantities[newName] = item.quantities[oldName];
+            delete item.quantities[oldName];
+          }
+        });
+
+        // Rename inside transactions logs
+        transactions.forEach(t => {
+          if (t.source === oldName) t.source = newName;
+          if (t.destination === oldName) t.destination = newName;
+        });
+
+        projects[idx] = newName;
+        
+        // Sync active project if renamed
+        if (activeProject === oldName) {
+          activeProject = newName;
+        }
+
+        showToast(`Project renamed to "${newName}".`);
+      }
+
+      saveAll();
+      closeProjectModal();
+      renderProjectSwitcherList();
+      updateSettingsDisplay();
+      renderProjectsSettingsTable();
+      renderDashboard();
+      renderInventoryTable();
+      renderTransactionsTable();
+      renderReports();
+    }
+
+    function handleDeleteProject(index) {
+      const projName = projects[index];
+      if (projName === activeProject) {
+        showToast("Cannot delete the active view project site context.", "danger");
+        return;
+      }
+
+      if (confirm(`Are you sure you want to delete "${projName}"? All stock balance counts recorded at this site will be permanently lost.`)) {
+        projects.splice(index, 1);
+        
+        // Delete quantities recorded at this site
+        inventory.forEach(item => {
+          if (item.quantities) {
+            delete item.quantities[projName];
+          }
+        });
+
+        saveAll();
+        renderProjectSwitcherList();
+        renderProjectsSettingsTable();
+        renderInventoryTable();
+        renderDashboard();
+        renderReports();
+        showToast("Project site records deleted.");
+      }
+    }
+
+    // ==========================================
+    // ANALYTICS & DASHBOARD METRICS
+    // ==========================================
+    function renderDashboard() {
+      document.getElementById("dashboard-site-sub").textContent = `Real-time overview of active project: ${activeProject}`;
+
+      // Global materials registered count
+      const totalItems = inventory.length;
+      document.getElementById("dash-total-items").textContent = totalItems;
+
+      // Sum of items at current project
+      const totalStockUnits = inventory.reduce((sum, item) => sum + getItemQuantityForProject(item, activeProject), 0);
+      document.getElementById("dash-total-stock").textContent = totalStockUnits.toLocaleString();
+
+      // Today's Date formatted
+      const todayString = new Date().toISOString().split('T')[0];
+      
+      // Filtered to active project
+      const todayTxns = transactions.filter(t => 
+        t.date === todayString && (t.source === activeProject || t.destination === activeProject)
+      );
+      document.getElementById("dash-today-txns").textContent = todayTxns.length;
+      
+      // Break down
+      const todayPurchases = todayTxns.filter(t => t.type === 'Purchase').length;
+      const todayTransfers = todayTxns.filter(t => t.type === 'Transfer To Other Site').length;
+      document.getElementById("dash-today-txn-desc").textContent = `${todayPurchases} Purchases, ${todayTransfers} Transfers`;
+
+      // All time stats for active project
+      const allPurchases = transactions.filter(t => 
+        t.type === 'Purchase' && t.destination === activeProject
+      ).length;
+      
+      const allTransfers = transactions.filter(t => 
+        t.type === 'Transfer To Other Site' && (t.source === activeProject || t.destination === activeProject)
+      ).length;
+
+      document.getElementById("dash-purchases").textContent = allPurchases;
+      document.getElementById("dash-transfers").textContent = allTransfers;
+
+      // Low stock counts at active project
+      const lowStockAlerts = inventory.filter(item => {
+        const status = getStockStatusForProject(item, activeProject);
+        return status.label === "Low Stock" || status.label === "Out of Stock";
+      }).length;
+      document.getElementById("dash-low-alerts").textContent = lowStockAlerts;
+
+      // Bell Alert Dot
+      const dot = document.getElementById("notification-dot");
+      if (lowStockAlerts > 0) {
+        dot.style.display = "block";
+      } else {
+        dot.style.display = "none";
+      }
+
+      // Quick Actions rendering based on permissions
+      const quickActionsBox = document.getElementById("dashboard-quick-actions");
+      quickActionsBox.innerHTML = "";
+
+      const allowedSections = ROLE_PERMISSIONS[currentUser.role] || ["dashboard"];
+
+      if (allowedSections.includes("stock-entry")) {
+        quickActionsBox.innerHTML += `
+          <button class="btn btn-secondary" style="width:100%; justify-content: flex-start;" onclick="switchTab('stock-entry')">
+            <i data-lucide="plus-circle" style="color: var(--secondary-color);"></i> Add Stock Entry
+          </button>
+        `;
+      }
+      quickActionsBox.innerHTML += `
+        <button class="btn btn-secondary" style="width:100%; justify-content: flex-start;" onclick="switchTab('inventory')">
+          <i data-lucide="search" style="color: var(--primary-color);"></i> Query Stock Balance
+        </button>
+      `;
+      if (allowedSections.includes("reports")) {
+        quickActionsBox.innerHTML += `
+          <button class="btn btn-secondary" style="width:100%; justify-content: flex-start;" onclick="switchTab('reports')">
+            <i data-lucide="trending-up" style="color: var(--success-color);"></i> Check Alerts & Reports
+          </button>
+        `;
+      }
+      if (allowedSections.includes("inventory") && currentUser.role === "Administrator") {
+        quickActionsBox.innerHTML += `
+          <button class="btn btn-secondary" style="width:100%; justify-content: flex-start;" onclick="openAddItemModal()">
+            <i data-lucide="package-plus" style="color: #8B5CF6;"></i> Register New Material
+          </button>
+        `;
+      }
+
+      // Hide or show dashboard main add button
+      const dashActBtn = document.getElementById("dash-action-btn");
+      if (!allowedSections.includes("stock-entry")) {
+        dashActBtn.style.display = "none";
+      } else {
+        dashActBtn.style.display = "inline-flex";
+      }
+
+      // Render Recent Activities list for active project
+      const activitiesContainer = document.getElementById("dash-recent-activities");
+      activitiesContainer.innerHTML = "";
+
+      const projectTxns = transactions.filter(t => t.source === activeProject || t.destination === activeProject).slice(0, 5);
+
+      if (projectTxns.length === 0) {
+        activitiesContainer.innerHTML = `
+          <div class="empty-state" style="padding: 24px;">
+            <p>No recent activity logs recorded for this project.</p>
+          </div>
+        `;
+        lucide.createIcons();
+        return;
+      }
+
+      projectTxns.forEach(t => {
+        const li = document.createElement("li");
+        li.className = "activity-item";
+
+        let isIncoming = ["Purchase", "Received From Other Site", "Rework"].includes(t.type) && t.destination === activeProject;
+        let isOutgoing = ["Transfer To Other Site", "Scrap", "Repair"].includes(t.type) && t.source === activeProject;
+
+        let iconClass = "activity-icon-neutral";
+        let iconName = "arrow-right";
+        let actionDesc = `Logged transaction`;
+
+        if (isIncoming) {
+          iconClass = "activity-icon-incoming";
+          iconName = "arrow-down-left";
+          actionDesc = `Received ${t.quantity} ${t.item}(s)`;
+        } else if (isOutgoing) {
+          iconClass = "activity-icon-outgoing";
+          iconName = "arrow-up-right";
+          actionDesc = `Dispatched ${t.quantity} ${t.item}(s)`;
+          if (t.type === "Repair") actionDesc = `Sent ${t.quantity} ${t.item}(s) for repair`;
+          if (t.type === "Scrap") actionDesc = `Scrapped ${t.quantity} ${t.item}(s)`;
+        } else {
+          actionDesc = `Adjusted ${t.quantity} ${t.item}(s)`;
+        }
+
+        li.innerHTML = `
+          <div class="activity-icon ${iconClass}">
+            <i data-lucide="${iconName}"></i>
+          </div>
+          <div class="activity-details">
+            <span class="activity-title">${actionDesc}</span>
+            <span class="activity-desc">${t.remarks || 'No notes provided'}</span>
+          </div>
+          <span class="activity-time">${t.date}</span>
+        `;
+        activitiesContainer.appendChild(li);
+      });
+      lucide.createIcons();
+    }
+
+    // ==========================================
+    // REPORTS & CHARTS
+    // ==========================================
+    function renderReports() {
+      document.getElementById("reports-site-sub").textContent = `Summarized analytics for project: ${activeProject}`;
+
+      // Stock sum at active project
+      const totalStockUnits = inventory.reduce((sum, item) => sum + getItemQuantityForProject(item, activeProject), 0);
+      document.getElementById("rep-total-stock").textContent = totalStockUnits.toLocaleString();
+
+      // Purchases at active project
+      const allPurchases = transactions.filter(t => 
+        t.type === 'Purchase' && t.destination === activeProject
+      ).length;
+      document.getElementById("rep-purchase-count").textContent = allPurchases;
+
+      // Transfers involving active project
+      const allTransfers = transactions.filter(t => 
+        t.type === 'Transfer To Other Site' && (t.source === activeProject || t.destination === activeProject)
+      ).length;
+      document.getElementById("rep-transfer-count").textContent = allTransfers;
+
+      // Alerts on active project
+      const lowCount = inventory.filter(item => {
+        const stat = getStockStatusForProject(item, activeProject);
+        return stat.label === "Low Stock" || stat.label === "Out of Stock";
+      }).length;
+      document.getElementById("rep-low-count").textContent = lowCount;
+
+      // Monthly transactions for active project
+      const currentMonth = new Date().toISOString().substring(0, 7);
+      const monthlyCount = transactions.filter(t => 
+        t.date.startsWith(currentMonth) && (t.source === activeProject || t.destination === activeProject)
+      ).length;
+      document.getElementById("rep-monthly-txns").textContent = monthlyCount;
+
+      // 1. RENDER SVG DONUT CHART (Category Distribution for Active Project)
+      const catCounts = {};
+      inventory.forEach(item => {
+        const q = getItemQuantityForProject(item, activeProject);
+        catCounts[item.category] = (catCounts[item.category] || 0) + q;
+      });
+
+      const categories = Object.keys(catCounts);
+      const totalStock = Object.values(catCounts).reduce((a,b)=>a+b, 0) || 1;
+
+      const colors = {
+        "Fixed Asset": "#1E3A8A",
+        "Machinery": "#2563EB",
+        "Electrical": "#8B5CF6",
+        "Permanent": "#22C55E",
+        "Cylinder": "#F59E0B"
+      };
+
+      const donutSvg = document.getElementById("donut-svg");
+      const donutLegend = document.getElementById("donut-legend");
+      
+      const existingPaths = donutSvg.querySelectorAll('.donut-segment');
+      existingPaths.forEach(p => p.remove());
+      donutLegend.innerHTML = "";
+
+      let accumulatedPercent = 0;
+
+      categories.forEach(cat => {
+        const qty = catCounts[cat];
+        const pct = (qty / totalStock) * 100;
+        const strokeColor = colors[cat] || "#64748B";
+
+        if (qty > 0) {
+          const circ = 188.5;
+          const strokeDash = (pct / 100) * circ;
+          const offset = circ - (accumulatedPercent / 100) * circ;
+
+          const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+          circle.setAttribute("class", "donut-segment");
+          circle.setAttribute("cx", "50");
+          circle.setAttribute("cy", "50");
+          circle.setAttribute("r", "30");
+          circle.setAttribute("stroke", strokeColor);
+          circle.setAttribute("stroke-dasharray", `${strokeDash} ${circ - strokeDash}`);
+          circle.setAttribute("stroke-dashoffset", offset.toString());
+          donutSvg.appendChild(circle);
+
+          accumulatedPercent += pct;
+        }
+
+        const legendItem = document.createElement("div");
+        legendItem.className = "legend-item";
+        legendItem.innerHTML = `
+          <span class="legend-color" style="background-color: ${strokeColor};"></span>
+          <span>${cat}: <strong>${qty}</strong> (${pct.toFixed(0)}%)</span>
+        `;
+        donutLegend.appendChild(legendItem);
+      });
+
+      const hole = donutSvg.querySelector('.donut-hole');
+      donutSvg.appendChild(hole);
+
+      // 2. RENDER SVG BAR CHART (Txns for active project)
+      const txnTypeCounts = {
+        "Purchase": 0,
+        "Received": 0,
+        "Transfer": 0,
+        "Repair": 0,
+        "Scrap": 0,
+        "Adjustment": 0
+      };
+
+      transactions.filter(t => t.source === activeProject || t.destination === activeProject).forEach(t => {
+        if (t.type === "Purchase") txnTypeCounts["Purchase"]++;
+        else if (t.type === "Received From Other Site") txnTypeCounts["Received"]++;
+        else if (t.type === "Transfer To Other Site") txnTypeCounts["Transfer"]++;
+        else if (t.type === "Repair") txnTypeCounts["Repair"]++;
+        else if (t.type === "Scrap") txnTypeCounts["Scrap"]++;
+        else if (t.type === "Manual Adjustment" || t.type === "Rework") txnTypeCounts["Adjustment"]++;
+      });
+
+      const barSvg = document.getElementById("bar-svg");
+      barSvg.innerHTML = "";
+
+      const keys = Object.keys(txnTypeCounts);
+      const vals = Object.values(txnTypeCounts);
+      const maxVal = Math.max(...vals) || 1;
+
+      const chartHeight = 150;
+      const chartWidth = 350;
+      const startX = 30;
+      const startY = 170;
+      const barSpacing = 50;
+      const barWidth = 24;
+
+      for (let i = 0; i <= 4; i++) {
+        const yVal = Math.round((maxVal / 4) * i);
+        const yPos = startY - (chartHeight / 4) * i;
+        
+        const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+        line.setAttribute("x1", startX.toString());
+        line.setAttribute("y1", yPos.toString());
+        line.setAttribute("x2", (startX + chartWidth).toString());
+        line.setAttribute("y2", yPos.toString());
+        line.setAttribute("stroke", "#E2E8F0");
+        line.setAttribute("stroke-width", "1");
+        barSvg.appendChild(line);
+
+        const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+        text.setAttribute("x", (startX - 8).toString());
+        text.setAttribute("y", (yPos + 4).toString());
+        text.setAttribute("font-size", "10px");
+        text.setAttribute("fill", "#64748B");
+        text.setAttribute("text-anchor", "end");
+        text.textContent = yVal.toString();
+        barSvg.appendChild(text);
+      }
+
+      keys.forEach((key, index) => {
+        const val = txnTypeCounts[key];
+        const h = (val / maxVal) * chartHeight;
+        const x = startX + 20 + index * barSpacing;
+        const y = startY - h;
+
+        const rect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+        rect.setAttribute("class", "bar-rect");
+        rect.setAttribute("x", x.toString());
+        rect.setAttribute("y", y.toString());
+        rect.setAttribute("width", barWidth.toString());
+        rect.setAttribute("height", h.toString());
+        rect.setAttribute("rx", "3");
+        
+        let barColor = "var(--secondary-color)";
+        if (key === "Transfer" || key === "Scrap") barColor = "var(--danger-color)";
+        if (key === "Repair") barColor = "var(--warning-color)";
+        if (key === "Adjustment") barColor = "#8B5CF6";
+        rect.setAttribute("fill", barColor);
+        barSvg.appendChild(rect);
+
+        if (val > 0) {
+          const valTxt = document.createElementNS("http://www.w3.org/2000/svg", "text");
+          valTxt.setAttribute("class", "bar-value");
+          valTxt.setAttribute("x", (x + barWidth/2).toString());
+          valTxt.setAttribute("y", (y - 4).toString());
+          valTxt.textContent = val.toString();
+          barSvg.appendChild(valTxt);
+        }
+
+        const label = document.createElementNS("http://www.w3.org/2000/svg", "text");
+        label.setAttribute("class", "bar-label");
+        label.setAttribute("x", (x + barWidth/2).toString());
+        label.setAttribute("y", (startY + 18).toString());
+        label.textContent = key;
+        barSvg.appendChild(label);
+      });
+
+      // 3. REPLENISHMENT LIST (Stock at active project vs Threshold limit)
+      const lowStockItems = inventory.filter(item => {
+        const stat = getStockStatusForProject(item, activeProject);
+        return stat.label === "Low Stock" || stat.label === "Out of Stock";
+      });
+
+      const replenishList = document.getElementById("reports-replenish-list");
+      replenishList.innerHTML = "";
+
+      if (lowStockItems.length === 0) {
+        replenishList.innerHTML = `
+          <div class="empty-state" style="padding: 16px;">
+            <h3 style="color:var(--success-color);">✅ Active project stock levels healthy</h3>
+            <p>No safety stock margins have been exceeded on this site.</p>
+          </div>
+        `;
+        return;
+      }
+
+      lowStockItems.forEach(item => {
+        const qty = getItemQuantityForProject(item, activeProject);
+        const pct = Math.min((qty / item.threshold) * 100, 100);
+        const statusDetails = getStockStatusForProject(item, activeProject);
+        
+        const card = document.createElement("div");
+        card.style.margin = "12px 0";
+        card.style.padding = "12px";
+        card.style.border = "1px solid var(--border-color)";
+        card.style.borderRadius = "var(--radius-sm)";
+        
+        let progressColor = "var(--warning-color)";
+        if (qty === 0) progressColor = "var(--danger-color)";
+
+        card.innerHTML = `
+          <div style="display:flex; justify-content:space-between; font-size:0.85rem; font-weight:600; margin-bottom:4px;">
+            <span>${item.name} <span style="font-weight:normal; font-size:0.75rem; color:var(--text-muted);">(${item.category})</span></span>
+            <span style="color: ${progressColor};">${qty} / ${item.threshold} ${item.unit} (${statusDetails.label})</span>
+          </div>
+          <div class="reports-low-stock-bar">
+            <div class="reports-low-stock-progress" style="width: ${pct}%; background-color: ${progressColor};"></div>
+          </div>
+        `;
+        replenishList.appendChild(card);
+      });
+    }
+
+    // PDF/Excel export reports specific to the active project
+    function exportData(type) {
+      if (type === 'Excel') {
+        let csvContent = "data:text/csv;charset=utf-8,";
+        csvContent += `SK Construction - Stock Balance Report for Project: ${activeProject}\n`;
+        csvContent += "Item Name,Category,Unit,Available Quantity,Safety Threshold,Status\n";
+        
+        inventory.forEach(item => {
+          const qty = getItemQuantityForProject(item, activeProject);
+          const status = getStockStatusForProject(item, activeProject).label;
+          csvContent += `"${item.name}","${item.category}","${item.unit}",${qty},${item.threshold},"${status}"\n`;
+        });
+
+        const encodedUri = encodeURI(csvContent);
+        const link = document.createElement("a");
+        link.setAttribute("href", encodedUri);
+        link.setAttribute("download", `sk_${activeProject.split(' ')[0]}_inventory_${new Date().toISOString().split('T')[0]}.csv`);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        showToast("Excel spreadsheet generated for active site.");
+      } else {
+        const printWindow = window.open('', '_blank');
+        printWindow.document.write(`
+          <html>
+          <head>
+            <title>SK Construction - Stock Audit: ${activeProject}</title>
+            <style>
+              body { font-family: 'Helvetica', sans-serif; padding: 40px; color: #1E293B; }
+              h1 { color: #1E3A8A; margin-bottom: 5px; }
+              table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+              th, td { border: 1px solid #CBD5E1; padding: 10px; text-align: left; }
+              th { background-color: #F8FAFC; font-size: 12px; text-transform: uppercase; color: #64748B; }
+              td { font-size: 14px; }
+              .header-meta { font-size: 12px; color: #64748B; margin-bottom: 20px; }
+            </style>
+          </head>
+          <body>
+            <h1>SK Construction Co. Ltd.</h1>
+            <div>Active Project Site: <strong>${activeProject}</strong></div>
+            <div class="header-meta">Date: ${new Date().toLocaleString()} | Stock Ledger Printout</div>
+            
+            <h3>Material Stock Balance</h3>
+            <table>
+              <thead>
+                <tr>
+                  <th>Item Name</th>
+                  <th>Category</th>
+                  <th>Unit</th>
+                  <th>Available Quantity</th>
+                  <th>Safety Alert Limit</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${inventory.map(item => `
+                  <tr>
+                    <td><strong>${item.name}</strong></td>
+                    <td>${item.category}</td>
+                    <td>${item.unit}</td>
+                    <td>${getItemQuantityForProject(item, activeProject)}</td>
+                    <td>${item.threshold}</td>
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
+            
+            <p style="margin-top: 30px; font-size:12px; text-align:center; color: #94A3B8;">
+              Authenticated System Signature Ledger. Version 1.0 © 2026 SK Construction.
+            </p>
+            <script>window.print();<\/script>
+          </body>
+          </html>
+        `);
+        printWindow.document.close();
+        showToast("PDF printable invoice summary opened.");
+      }
+    }
+
+    // ==========================================
+    // SPLASH SCREEN SYSTEM
+    // ==========================================
+    let splashTimeout = null;
+    let splashInterval = null;
+
+    function initSplashScreen() {
+      const progress = document.getElementById("splash-progress");
+      const loadingText = document.querySelector(".splash-loading-text");
+      if (!progress) return;
+
+      const steps = [
+        { percentage: 15, text: "Connecting to secure local datastore..." },
+        { percentage: 40, text: "Loading multi-project inventory schemas..." },
+        { percentage: 65, text: "Reconciling site transaction ledger logs..." },
+        { percentage: 85, text: "Compiling real-time safety thresholds..." },
+        { percentage: 100, text: "System Ready. Initializing interface..." }
+      ];
+
+      let width = 0;
+      let currentStep = 0;
+
+      // Update progress bar width and loading text periodically
+      splashInterval = setInterval(() => {
+        if (width >= 100) {
+          clearInterval(splashInterval);
+          // Wait a brief moment at 100% then trigger fadeout
+          splashTimeout = setTimeout(() => {
+            skipSplash();
+          }, 300);
+          return;
+        }
+
+        width += 1;
+        progress.style.width = width + "%";
+
+        // Update status text based on percentage milestones
+        if (currentStep < steps.length && width >= steps[currentStep].percentage) {
+          loadingText.textContent = steps[currentStep].text;
+          currentStep++;
+        }
+      }, 30); // 100 * 30ms = 3 seconds total splash duration
+    }
+
+    function skipSplash() {
+      const splash = document.getElementById("splash-screen");
+      if (splash) {
+        clearInterval(splashInterval);
+        clearTimeout(splashTimeout);
+        splash.classList.add("fade-out");
+        
+        // Remove from layout after fade animation
+        setTimeout(() => {
+          splash.remove();
+        }, 800);
+      }
+    }
+  </script>
+</body>
+</html>
